@@ -106,7 +106,7 @@ For more details, see the [LICENSE](LICENSE) file.
 
 ## Credits
 
-Developed with ❤️ by [Srimadhaven Thirumurthy](https://github.com/yourusername)
+Developed with ❤️ by [Srimadhaven Thirumurthy](https://github.com/MaddyDev-glitch)
 
 ---
 
