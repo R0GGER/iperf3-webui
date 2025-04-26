@@ -114,5 +114,19 @@ If you like this project, consider giving it a ⭐️ on GitHub!
 
 ---
 
+## 🚀 Feature Requests & Pull Requests
+Have an idea to make iPerf3-WebUI even better?
+Found a bug or missing feature?
+
+Feel free to open an Issue for feature requests, bug reports, or suggestions.
+
+Pull Requests (PRs) are very welcome!
+If you fix a bug, improve the UI, or add new functionality, submit a PR — let's build it together!
+
+When contributing, please make sure your code is clean, readable, and tested.
+Together, we can make the best modern UI for iPerf3!
+
+---
+
 #
 
