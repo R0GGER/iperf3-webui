@@ -97,8 +97,10 @@ No changes to iperf3 itself — just smarter, friendlier access to its results.
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.  
-Feel free to use, modify, and distribute!
+This project is licensed under the **MIT License** with attribution.  
+Feel free to use, modify, and distribute, but please give proper credit to the original author(s).
+
+For more details, see the [LICENSE](LICENSE) file.
 
 ---
 
