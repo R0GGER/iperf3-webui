@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedtest GUI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        /* Apply Montserrat font to the entire body */
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+
+
+        .field label,
+        #runBtn,
+        #output h2,
+        footer p {
+            font-weight: 600;
+            /* Medium weight for labels and buttons */
+        }
+
+        .number div {
+            font-weight: 400;
+            /* Regular for smaller text */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <!-- <img src="/static/logo.svg" alt=" Logo" class="logo"> -->
+        <!-- <img src="/static/logo.svg" alt=" Logo" class="logo">
+        <img src="/static/logo.png" alt=" Logo" class="logo"> -->
+
+        <h1>Iperf3 GUI</h1>
+    </header>
+
+    <main class="container">
+        <div class="dial">
+
+        </div>
+
+        <div class="selectors">
+            <div class="field">
+                <label for="target">Target IP</label>
+                <input type="text" id="target" value="{{ default_target }}"
+                    placeholder="Enter Target IP (e.g., 192.168.1.2)">
+            </div>
+            <div class="field">
+                <label for="protocol">Protocol</label>
+                <div class="toggle-container">
+                    <button id="tcpBtn" class="toggle-btn active">TCP</button>
+                    <button id="udpBtn" class="toggle-btn">UDP</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="protocol">Mode</label>
+                <div class="toggle-container">
+                    <button id="uploadBtn" class="toggle-btn active">Upload</button>
+                    <button id="downloadBtn" class="toggle-btn">Download</button>
+                </div>
+            </div>
+            <div class="field">
+                <label for="protocol">Units</label>
+                <div class="toggle-container">
+                    <button id="Kbits" class="toggle-btn ">Kbits</button>
+                    <button id="Mbits" class="toggle-btn active">Mbits</button>
+                    <button id="Gbits" class="toggle-btn">Gbits</button>
+
+                </div>
+            </div>
+
+
+            <div class="field">
+                <label for="streams">Streams</label>
+                <input type="number" id="streams" min="1" max="10" value="8">
+            </div>
+
+            <div class="field" id="bandwidth-field" style="display: none;">
+                <label for="streams">Bandwidth per stream (set to 0 for max bw)</label>
+                <input type="string" id="bandwidth" value="0">
+            </div>
+        </div>
+
+        <button id="runBtn">Run iPerf3</button>
+        <div class="status">
+            Status: Ready
+        </div>
+        <div class="avg_speed">
+            AVG: --
+        </div>
+        <div class="max_speed">
+            MAX: --
+        </div>
+        <!-- Speedometer Dial Section -->
+        <div class="speedometer-container">
+            <canvas id="speedometer"></canvas>
+            <div class="number">
+                <div id="current-value">0</div>
+                <div class="units">Mbps</div>
+            </div>
+        </div>
+
+
+        <div id="output">
+            <h2>Output</h2>
+            <pre id="result">Waiting for input...</pre>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 <a href="https://github.com/MaddyDev-glitch">MaddyDev-glitch</a></p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

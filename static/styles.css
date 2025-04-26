@@ -1,0 +1,327 @@
+/* body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    background-color: #141526;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.status{
+    margin-top: 10px;
+    margin-bottom: 5px;
+
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 30px;
+    background-color: #141526;
+    flex-direction: column;
+}
+.logo {
+    width: 30%;
+    max-width: 200px;
+    margin-top: 15px;
+}
+header h1 {
+    color: #ffffff;
+    font-weight: 300;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    text-align: center;
+}
+
+.speedometer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #141526;
+}
+
+#speedometer {
+    display: block;
+    width: 80vw;
+    max-width: 400px;
+    height: auto;
+}
+
+.number {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 27px;
+    line-height: 0.8;
+    transform: scaleY(1) scaleX(1);
+    color: #fff;
+    text-align: center;
+    margin-top: -194px;
+    margin-bottom: 100px;
+}
+
+.units {
+    margin-top: 10px;
+    line-height: 1.0;
+    transform: scaleY(1) scaleX(1.3);
+    font-size: 1rem;
+    color: #bbb;
+}
+
+#output {
+    margin-top: 40px;
+    text-align: left;
+    background: #26273b;
+    padding: 10px;
+    border-radius: 8px;
+    color: #00d1b2;
+}
+
+button {
+    margin-top: 20px;
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.toggle-container {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+}
+
+.toggle-btn {
+    padding: 10px 20px;
+    background-color: #26273b;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top:10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+.toggle-btn:hover {
+    background-color: #333;
+}
+
+.toggle-btn.active {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+}
+
+.toggle-btn:focus {
+    outline: none;
+}
+button:hover {
+    background-color: #0056b3;
+}
+input, select {
+    width: 90%;
+    padding: 12px;
+    margin: 8px 0 20px 0;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #26273b;
+    color: #fff;
+    font-size: 1rem;
+    transition: border 0.2s ease;
+}
+.field input, .field select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    font-size: 1rem;
+    background-color: #26273b;
+    color: #fff;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+.field label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: #fff;
+}
+.field input:focus, .field select:focus {
+    outline: none;
+    border-color: #555;
+} */
+
+:root {
+    --primary-color: #00c3ff;
+    --secondary-color: #292d3e;
+    --accent-color: #ffffff;
+    --background-color: #181a25;
+    --border-radius: 12px;
+}
+
+body {
+    background: var(--background-color);
+    color: var(--accent-color);
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background: var(--secondary-color);
+    border-bottom: 1px solid #333;
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.container {
+    padding: 20px;
+    flex: 1;
+    max-width: 600px;
+    margin: auto;
+}
+
+.selectors {
+    margin-bottom: 20px;
+}
+
+.field {
+    margin-bottom: 15px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.field input {
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    border: 1px solid #444;
+    background: #222430;
+    color: var(--accent-color);
+    font-size: 1rem;
+}
+
+.toggle-container {
+    display: flex;
+    gap: 10px;
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 10px;
+    background: #222430;
+    color: var(--accent-color);
+    border: 1px solid #444;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.toggle-btn:hover {
+    background: var(--primary-color);
+}
+
+.toggle-btn.active {
+    background: var(--primary-color);
+    color: #000;
+    font-weight: 700;
+}
+a{
+    color:#00e1ff
+}
+
+#runBtn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background: var(--primary-color);
+    color: #000;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#runBtn:hover {
+    background: #00e1ff;
+}
+
+.status, .avg_speed, .max_speed {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 1rem;
+}
+
+.speedometer-container {
+    position: relative;
+    margin: 30px auto;
+    width: 200px;
+    height: 200px;
+}
+
+#speedometer {
+    width: 100%;
+    height: 100%;
+}
+
+.number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.number div {
+    font-size: 2rem;
+}
+
+.units {
+    font-size: 1rem;
+}
+
+#output {
+    margin-top: 30px;
+    background: #222430;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    background: var(--secondary-color);
+    font-size: 0.8rem;
+    color: #aaa;
+}

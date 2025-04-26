@@ -1,0 +1,232 @@
+import os
+import re
+import select
+import socket
+import subprocess
+import threading
+import time
+
+import psutil
+from flask import Flask, Response, jsonify, render_template, request
+
+app = Flask(__name__)
+bandwidth_pattern = r"(\d+\.\d+|\d+) (K|M|G)bits/sec"
+SUM_pattern = r"\[\s*SUM\s*\]"
+bandwidth_values = []
+SUM_values = []
+
+output_lines = []
+streams = 0
+
+
+def convert_bandwidth(value, target_unit="Gbits"):
+    """
+    Args:
+        value (str): The input bandwidth value (e.g., "2.7 Gbits/sec", "2 Mbits/sec").
+        target_unit (str): The target unit ("Gbits", "Mbits", or "Kbits").
+    Returns:
+        float: The converted bandwidth value in the target unit.
+    """
+    unit_factors = {
+        "Kbits": 1_000,
+        "Mbits": 1_000_000,
+        "Gbits": 1_000_000_000,
+    }
+
+    import re
+
+    pattern = r"(\d+\.?\d*)\s*(K|M|G)bits/sec"
+    match = re.match(pattern, value.strip())
+
+    if not match:
+        return 0.0
+
+    number, unit = match.groups()
+    number = float(number)
+    source_unit = unit + "bits"
+
+    if source_unit not in unit_factors or target_unit not in unit_factors:
+        return 0.0
+
+    value_in_bits = number * unit_factors[source_unit]
+
+    converted_value = value_in_bits / unit_factors[target_unit]
+    return float(converted_value)
+
+
+def get_ip_address_starting_with_10():
+    for interface, addrs in psutil.net_if_addrs().items():
+        for addr in addrs:
+            if addr.family == socket.AF_INET and addr.address.startswith("10."):
+                # Splitting the IP address into parts and change the last octet to '2'
+                ip_parts = addr.address.split(".")
+                ip_parts[-1] = "2"  # Change the last octet
+                return ".".join(ip_parts)
+    return ""
+
+
+@app.route("/")
+def index():
+    default_target = get_ip_address_starting_with_10()
+    return render_template("index.html", default_target=default_target)
+
+
+@app.route("/run_iperf", methods=["POST"])
+def run_iperf():
+    global output_lines, streams
+    output_lines = []
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid input: No JSON provided"}), 400
+
+    protocol = data.get("protocol")
+    mode = data.get("mode")
+    streams = data.get("streams", 1)
+    target = data.get("target", "192.168.1.226")
+    bandwidth = data.get("bandwidth", "0")
+
+
+    if protocol not in ["tcp", "udp"]:
+        return jsonify({"error": 'Invalid protocol. Must be "tcp" or "udp".'}), 400
+
+    if streams == "0":
+        return jsonify({"error": "Streams must be a positive integer."}), 400
+
+    # Run iperf3 in a separate thread to avoid blocking the main thread
+    def start_iperf():
+        cmd = ["iperf3", "-c", target, "-P", str(streams)]
+        if protocol == "udp":
+            cmd.append("-u")
+            cmd.append("-b")
+            cmd.append(bandwidth)
+            cmd.append("-t")
+            cmd.append("10")
+        if mode == "download":
+            cmd.append("-R")
+        cmd.append("--forceflush")
+        print(cmd)
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+        )
+        print("started")
+        while True:
+            output = process.stdout.readline()
+            print(">> ", output)
+            if output == "" and process.poll() is not None:
+                break
+            if output:
+                output_lines.append(output.strip())
+            time.sleep(0.1)
+        print("out of loop")
+        process.wait()
+
+    # Start the iperf3 process in a background thread
+    threading.Thread(target=start_iperf).start()
+
+    return jsonify({"status": "iperf3 started"}), 200
+
+
+@app.route("/stream_iperf", methods=["GET"])
+def stream_iperf():
+    def generate_output():
+        global output_lines, streams
+        process_done = False  # Track process completion
+        if streams == 1:
+            while True: 
+                if output_lines:
+                    if "out-of-order" in output_lines[0]:
+                        print(f"--- TEST COMPLETED ---\n\n")
+                        yield f"data: -1\n\n"
+                        process_done = True  # Mark process as done
+                        break
+                    output_line = output_lines[0]
+                    print("debug if: ", output_line)
+                    bandwidth_match = re.search(bandwidth_pattern, output_line)
+                    if "[SUM]" in output_line and "bits/sec" in output_line:
+                        if bandwidth_match:
+                            sum_str = bandwidth_match.group(0)
+                            sum_g = convert_bandwidth(sum_str, "Mbits")
+                            SUM_values.append(sum_g)
+                            print("hold on to old value")
+                            print(f"data: {sum_g}\n\n")
+                            yield f"data: {sum_g}\n\n"
+                    else:
+                        if bandwidth_match:
+                            speed_str = bandwidth_match.group(0)
+                            speed_g = convert_bandwidth(speed_str, "Mbits")
+                            print(f"data: {speed_g}\n\n")
+                            yield f"data: {speed_g}\n\n"
+                            bandwidth_values.append(speed_g)
+                        elif "iperf Done" in output_line:
+                            print(f"--- TEST COMPLETED ---\n\n")
+                            yield f"--- TEST COMPLETED ---\n\n"
+                            yield f"data: -1\n\n"
+                            process_done = True  # Mark process as done
+                        elif (
+                            "- - -" in output_line
+                            or "[ ID] Interval           Transfer" in output_line
+                            or "sender" in output_line
+                            or not output_line.strip()
+                        ):
+                            print("hold on to old value")
+                            print(f"data: {bandwidth_values[-1]}\n\n")
+                            yield f"data: {bandwidth_values[-1]}\n\n"
+                        elif process_done:  # Exit the generator when done
+                            print(f"--- TEST COMPLETED ---\n\n")
+                            yield f"data: -1\n\n"
+                            process_done = True  # Mark process as done
+                            break
+                        else:
+                            print(f"data: {0}\n\n")
+                            yield f"data: {0}\n\n"
+                            bandwidth_values.append(0)
+                    if output_lines:
+                        output_lines.pop(0)
+                   
+            yield f"data: {SUM_values[-1]}\n\n"
+
+        else:
+            while True:
+                if output_lines:
+                    if "out-of-order" in output_lines[0]:
+                        print(f"--- TEST COMPLETED ---\n\n")
+                        yield f"data: -1\n\n"
+                        process_done = True  # Mark process as done
+                        break
+                    output_line = output_lines[0]
+                    print("debug else: ", output_line)
+                    bandwidth_match = re.search(bandwidth_pattern, output_line)
+                    if (
+                        "[SUM]" in output_line
+                        and "bits/sec" in output_line
+                        and "sender" not in output_line
+                    ):
+                        if bandwidth_match:
+                            print(">>: ", output_line)
+                            sum_str = bandwidth_match.group(0)
+                            sum_g = convert_bandwidth(sum_str, "Mbits")
+                            SUM_values.append(sum_g)
+                            print(f"data: {sum_g}\n\n")
+                            yield f"data: {sum_g}\n\n"
+                    elif "iperf Done" in output_line:
+                        print(f"--- TEST COMPLETED ---\n\n")
+                        yield f"data: -1\n\n"
+                        process_done = True  # Mark process as done
+                    elif process_done:  # Exit the generator when done
+                        break
+                    
+                    if output_lines:
+                        output_lines.pop(0)
+                    
+            yield f"data: {SUM_values[-1]}\n\n"
+
+    return Response(generate_output(), content_type="text/event-stream")
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
