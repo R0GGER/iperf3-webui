@@ -1,0 +1,118 @@
+# iPerf3-WebUI
+
+**iPerf3-WebUI** is a modern, lightweight, web-based frontend for iPerf3, built using Python 3 and Flask.  
+Run network speed tests easily from **any device** — macOS, Linux, Windows, or even Android phones (via Termux).
+
+---
+
+## ✨ Features
+
+- 🌐 **Web-based GUI** — Works in any browser
+- ⚡ **Lightweight & Fast** — Built with Flask
+- 🔥 **Python 3 Only** — No legacy Python 2.7 code
+- 📈 **Live Speedometer** — Real-time results visualization
+- 🔄 **Upload/Download Modes** — Easy switching
+- 🌍 **Cross-platform** — Works on desktops, laptops, and mobile
+- 🛠 **Customizable** — Streams, units (Kbits/Mbits/Gbits), target IP, Logos
+
+---
+
+## 📸 Screenshots
+
+> 
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/iperf3-webui.git
+cd iperf3-webui
+```
+
+### 2. Install requirements
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the server
+
+```bash
+python3 app.py
+```
+
+By default, the app will be available at:  
+👉 http://localhost:5000
+
+(You can change the port inside `app.py` if needed.)
+
+---
+
+## ⚙️ Requirements
+
+- Python 3.6+ (Developed and Tested on Python 3.11.5)
+- Flask 
+- iPerf3 installed on your machine, iPerf3.exe is packaged in the repo
+
+> On Linux, install iPerf3 via:  
+> ```bash
+> sudo apt install iperf3
+> ```
+
+---
+
+## 👋 Usage
+
+- Enter the **Target IP Address** you want to test against.
+- Choose between **TCP** or **UDP**.
+- Select **Upload** or **Download** mode.
+- Set **streams** and **units** if needed.
+- Click **Run iPerf3** and watch live results!
+
+---
+
+## 🧐 Why This Project?
+
+Despite iPerf3 being one of the most popular and trusted speed testing tools, there are no proper, modern GUIs available today.
+Most existing options are outdated, heavy, or tied to desktop platforms like Windows or Linux-only environments.
+
+iPerf3-WebUI changes that — delivering a fast, lightweight, and fully web-based solution that runs anywhere Python 3 can: macOS, Linux, Windows, and even mobile (Termux on Android).
+
+No messy installations, no clunky interfaces — just pure, streamlined performance testing from any device.
+
+---
+
+## ⚙️ What is iPerf3-WebUI?
+iPerf3-WebUI is a parser and wrapper around the official iperf3 client.
+It runs iperf3 as a background process, captures its command-line output in real time, and parses the results to present them in a modern, easy-to-use web interface.
+
+Think of it as a lightweight bridge — combining the raw power of iperf3 with a clean, accessible UI for anyone to run network performance tests without touching the terminal.
+
+No changes to iperf3 itself — just smarter, friendlier access to its results.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.  
+Feel free to use, modify, and distribute!
+
+---
+
+## Credits
+
+Developed with ❤️ by [Srimadhaven Thirumurthy](https://github.com/yourusername)
+
+---
+
+## 🔥 Bonus
+
+If you like this project, consider giving it a ⭐️ on GitHub!
+
+---
+
+#
+
