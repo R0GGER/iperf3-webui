@@ -19,7 +19,9 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 
 ## 📸 Screenshots
 
-> 
+> ![Alt Text](images/ipg1.PNG)
+> ![Alt Text](images/ipg2.PNG)
+
 
 ---
 

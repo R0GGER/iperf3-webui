@@ -285,13 +285,17 @@ a{
 .speedometer-container {
     position: relative;
     margin: 30px auto;
-    width: 200px;
-    height: 200px;
+    /* width: 200px;
+    height: 200px; */
 }
 
 #speedometer {
-    width: 100%;
-    height: 100%;
+    /* width: 100%;
+    height: 100%; */
+    display: block;
+    width: 80vw;
+    max-width: 400px;
+    height: auto;
 }
 
 .number {

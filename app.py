@@ -1,12 +1,8 @@
-import os
 import re
-import select
-import socket
 import subprocess
 import threading
 import time
 
-import psutil
 from flask import Flask, Response, jsonify, render_template, request
 
 app = Flask(__name__)
@@ -17,7 +13,7 @@ SUM_values = []
 
 output_lines = []
 streams = 0
-
+selected_unit = "Mbits"
 
 def convert_bandwidth(value, target_unit="Gbits"):
     """
@@ -53,23 +49,23 @@ def convert_bandwidth(value, target_unit="Gbits"):
     converted_value = value_in_bits / unit_factors[target_unit]
     return float(converted_value)
 
-
-def get_ip_address_starting_with_10():
-    for interface, addrs in psutil.net_if_addrs().items():
-        for addr in addrs:
-            if addr.family == socket.AF_INET and addr.address.startswith("10."):
-                # Splitting the IP address into parts and change the last octet to '2'
-                ip_parts = addr.address.split(".")
-                ip_parts[-1] = "2"  # Change the last octet
-                return ".".join(ip_parts)
-    return ""
-
-
 @app.route("/")
 def index():
-    default_target = get_ip_address_starting_with_10()
+    default_target = ""
     return render_template("index.html", default_target=default_target)
 
+@app.route("/set_unit", methods=["POST"])
+def set_unit():
+    global selected_unit
+    data = request.get_json()
+
+    if not data or 'unit' not in data:
+        return jsonify({'error': 'No unit provided'}), 400
+
+    selected_unit = data['unit']
+    print(f"Received unit from frontend: {selected_unit}")
+
+    return jsonify({'status': 'success', 'selected_unit': selected_unit})
 
 @app.route("/run_iperf", methods=["POST"])
 def run_iperf():
@@ -150,7 +146,7 @@ def stream_iperf():
                     if "[SUM]" in output_line and "bits/sec" in output_line:
                         if bandwidth_match:
                             sum_str = bandwidth_match.group(0)
-                            sum_g = convert_bandwidth(sum_str, "Mbits")
+                            sum_g = convert_bandwidth(sum_str, selected_unit)
                             SUM_values.append(sum_g)
                             print("hold on to old value")
                             print(f"data: {sum_g}\n\n")
@@ -158,7 +154,7 @@ def stream_iperf():
                     else:
                         if bandwidth_match:
                             speed_str = bandwidth_match.group(0)
-                            speed_g = convert_bandwidth(speed_str, "Mbits")
+                            speed_g = convert_bandwidth(speed_str, selected_unit)
                             print(f"data: {speed_g}\n\n")
                             yield f"data: {speed_g}\n\n"
                             bandwidth_values.append(speed_g)
@@ -209,7 +205,7 @@ def stream_iperf():
                         if bandwidth_match:
                             print(">>: ", output_line)
                             sum_str = bandwidth_match.group(0)
-                            sum_g = convert_bandwidth(sum_str, "Mbits")
+                            sum_g = convert_bandwidth(sum_str, selected_unit)
                             SUM_values.append(sum_g)
                             print(f"data: {sum_g}\n\n")
                             yield f"data: {sum_g}\n\n"

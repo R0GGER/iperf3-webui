@@ -51,6 +51,8 @@ document.getElementById('Kbits').addEventListener('click', function() {
 
     units = 'Kbits';
     console.log('Selected units: Kbits');
+    sendUnitToServer(units);
+
 });
 
 document.getElementById('Mbits').addEventListener('click', function() {
@@ -61,6 +63,8 @@ document.getElementById('Mbits').addEventListener('click', function() {
 
     units = 'Mbits';
     console.log('Selected units: Mbits');
+    sendUnitToServer(units);
+
 });
 
 document.getElementById('Gbits').addEventListener('click', function() {
@@ -73,6 +77,8 @@ document.getElementById('Gbits').addEventListener('click', function() {
 
     units = 'Gbits';
     console.log('Selected units: Gbits');
+    sendUnitToServer(units);
+
 });
 
 const runBtn = document.getElementById('runBtn');
@@ -90,7 +96,7 @@ canvas.width = canvasSize;
 canvas.height = canvasSize;
 
 const minValue = 0;
-let maxValue = 150;
+let maxValue = 0;
 const breakdown = 5;
 const arcLength = Math.PI;
 const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -128,14 +134,28 @@ function drawSpeedometer(value) {
 }
 function generateBreakdownList(maxValue, numSteps) {
     const breakdownList = [];
-    const stepSize = maxValue / numSteps;
+    numSteps = numSteps - 1;
+    if (numSteps <= 0 || maxValue <= 0) return breakdownList;
+
+    let rawStep = maxValue / numSteps;
+    let magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    let niceStep = Math.ceil(rawStep / magnitude) * magnitude;
+
+    let adjustedMax = niceStep * numSteps;
 
     for (let i = 0; i <= numSteps; i++) {
-        breakdownList.push(parseFloat((i * stepSize).toFixed(1)));
+        let value = (i * niceStep);
+        if (adjustedMax < 10) {
+            breakdownList.push(parseFloat(value.toFixed(1)));
+        } else {
+            breakdownList.push(Math.round(value));
+        }
     }
 
+    console.log(breakdownList);
     return breakdownList;
 }
+
 function drawMarkers(startAngle, endAngle) {
     const markerValues = generateBreakdownList(maxValue, breakdown);
     const markerRadius = 100;
@@ -179,7 +199,7 @@ function updateSpeedometer(value) {
     targetValue = value;
     if ( currentValue > maxValue*0.80)
     {
-        maxValue = maxValue + (maxValue*0.4)
+        maxValue = currentValue + (currentValue*0.2)
     }
 
     animateNeedle(previousValue, targetValue);
@@ -209,6 +229,24 @@ function animateNeedle(startValue, endValue) {
 function lerp(start, end, t) {
     return start + (end - start) * t;
 }
+
+function sendUnitToServer(selectedUnit) {
+    fetch('/set_unit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ unit: selectedUnit })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Server response:', data);
+    })
+    .catch(error => {
+        console.error('Error sending unit to server:', error);
+    });
+}
+
 
 runBtn.addEventListener('click', async () => {
     const target = targetInput.value;
