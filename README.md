@@ -19,8 +19,9 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 
 ## 📸 Screenshots
 
-> ![Alt Text](images/ipg1.PNG)
-> ![Alt Text](images/ipg2.PNG)
+> <img src="https://raw.githubusercontent.com/MaddyDev-glitch/iperf3-webui/main/images/ipg1.PNG" alt=“iPerf3 UI Screenshot” width=“900”/>
+> <img src="https://raw.githubusercontent.com/MaddyDev-glitch/iperf3-webui/main/images/ipg2.PNG" alt=“iPerf3 UI Screenshot” width=300/>
+
 
 
 ---
