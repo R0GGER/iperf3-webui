@@ -60,7 +60,7 @@ By default, the app will be available at:
 #### 1. Build the Docker image
 
 ```bash
-docker build -f ContainerFile -t iperf3-webui:v1.0 .
+docker build -f Containerfile -t iperf3-webui:v1.0 .
 ```
 
 #### 2. Run the container
