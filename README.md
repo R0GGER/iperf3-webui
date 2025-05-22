@@ -27,20 +27,22 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 
 ## 🚀 Getting Started
 
-### 1. Clone the repository
+### 🔧 Option 1: Run Locally
+
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/yourusername/iperf3-webui.git
 cd iperf3-webui
 ```
 
-### 2. Install requirements
+#### 2. Install requirements
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Run the server
+#### 3. Run the server
 
 ```bash
 python3 app.py
@@ -50,6 +52,24 @@ By default, the app will be available at:
 👉 http://localhost:5000
 
 (You can change the port inside `app.py` if needed.)
+
+---
+
+### 🐳 Option 2: Run as Docker Container (or Podman)
+
+#### 1. Build the Docker image
+
+```bash
+docker build -f ContainerFile -t iperf3-webui:v1.0 .
+```
+
+#### 2. Run the container
+
+```bash
+docker run -it -p 5000:5000 iperf3-webui:v1.0
+```
+
+Now access the Web UI at 👉 http://localhost:5000 from your browser.
 
 ---
 
