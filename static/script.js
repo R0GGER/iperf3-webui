@@ -81,6 +81,15 @@ document.getElementById('Gbits').addEventListener('click', function() {
 
 });
 
+fetch('/iperf_version')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('iperf_version').textContent = data.version;
+    })
+    .catch(error => {
+        document.getElementById('iperf_version').textContent = 'Error fetching version';
+    });
+
 const runBtn = document.getElementById('runBtn');
 const targetInput = document.getElementById('target');
 // const protocolInput = document.getElementById('protocol');

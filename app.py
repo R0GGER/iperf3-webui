@@ -223,6 +223,22 @@ def stream_iperf():
 
     return Response(generate_output(), content_type="text/event-stream")
 
+@app.route("/iperf_version", methods=["GET"])
+def iperf_version():
+    def get_iperf_version():
+        cmd = "iperf3 -v | head -n 1"
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            shell=True
+        )
+        output, _ = process.communicate()
+        return output.strip()
+
+    version = get_iperf_version()
+    return jsonify({"version": version}), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
