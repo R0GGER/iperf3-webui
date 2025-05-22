@@ -4,13 +4,14 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y iperf3
 
+COPY images ./images
 COPY static ./static
 COPY templates ./templates
 COPY app.py .
 
-RUN --mount=type=bind,source=requirements.txt,target=/tmp/requirements.txt \
-    pip install --requirement /tmp/requirements.txt
+COPY requirements.txt .
+
+RUN pip install --requirement requirements.txt
 
 EXPOSE 5000
-
-ENTRYPOINT python3 /app/app.py
+CMD ["python3", "app.py"]
