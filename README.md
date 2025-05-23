@@ -13,7 +13,7 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 - 📈 **Live Speedometer** — Real-time results visualization
 - 🔄 **Upload/Download Modes** — Easy switching
 - 🌍 **Cross-platform** — Works on desktops, laptops, and mobile
-- 🛠 **Customizable** — Streams, units (Kbits/Mbits/Gbits), target IP, Logos
+- 🛠 **Customizable** — Streams, units (Kbits/Mbits/Gbits), target IP, Logos, themes
 
 ---
 
