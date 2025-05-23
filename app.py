@@ -2,6 +2,7 @@ import re
 import subprocess
 import threading
 import time
+import yaml
 
 from flask import Flask, Response, jsonify, render_template, request
 
@@ -51,8 +52,13 @@ def convert_bandwidth(value, target_unit="Gbits"):
 
 @app.route("/")
 def index():
+    with open('env.yaml') as f:
+        config = yaml.safe_load(f)
+    logos = config.get('logos', [])
+    theme = config.get('theme', {})
+
     default_target = ""
-    return render_template("index.html", default_target=default_target)
+    return render_template("index.html", default_target=default_target, logos = logos,theme=theme)
 
 @app.route("/set_unit", methods=["POST"])
 def set_unit():

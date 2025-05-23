@@ -8,6 +8,9 @@ document.getElementById('downloadBtn').classList.add('active');
 const bandwidthField = document.getElementById('bandwidth-field');
 const bandwidth_value = document.getElementById('bandwidth')
 
+function getCSSVariable(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
 
 document.getElementById('tcpBtn').addEventListener('click', function() {
     document.getElementById('tcpBtn').classList.add('active');
@@ -110,9 +113,9 @@ const breakdown = 5;
 const arcLength = Math.PI;
 const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
 
-gradient.addColorStop(0, '#c3dcf4');
-gradient.addColorStop(0.5, '#2caee8');
-gradient.addColorStop(1, '#0099dc');
+gradient.addColorStop(0, getCSSVariable("--speedometer_gradient_1"));
+gradient.addColorStop(0.5, getCSSVariable("--speedometer_gradient_2"));
+gradient.addColorStop(1, getCSSVariable("--speedometer_gradient_3"));
 let currentValue = 0;
 
 function drawSpeedometer(value) {
@@ -171,7 +174,7 @@ function drawMarkers(startAngle, endAngle) {
     const arcLength = endAngle - startAngle;
 
     ctx.font = '16px Montserrat';
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = getCSSVariable('--text');
 
     markerValues.forEach((markerValue) => {
         const markerAngle = startAngle + (markerValue / maxValue) * arcLength;

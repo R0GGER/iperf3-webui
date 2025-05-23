@@ -96,6 +96,17 @@ Now access the Web UI at 👉 http://localhost:5000 from your browser.
 
 ---
 
+## 🎨 Theme Customization with env.yaml
+Easily change your app’s look by editing env.yaml—no code required.
+
+### ⚡ How to Customize
+> Open env.yaml.
+
+- Update values under logos and theme: for your colors, speedometer gradients, and logos.
+- Save and reload the browser tab.
+
+---
+
 ## 🧐 Why This Project?
 
 Despite iPerf3 being one of the most popular and trusted speed testing tools, there are no proper, modern GUIs available today.

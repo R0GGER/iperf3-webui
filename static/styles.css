@@ -165,11 +165,11 @@ input, select {
 } */
 
 :root {
-    --primary-color: #00c3ff;
-    --secondary-color: #292d3e;
+    --primary-color: var(--primary);
+    --secondary-color: var(--secondary);
     --accent-color: #ffffff;
-    --background-color: #181a25;
-    --border-radius: 12px;
+    --background-color: var(--background);
+    --border-radius: 5px;
 }
 
 body {
@@ -194,6 +194,8 @@ header h1 {
     font-size: 2rem;
     font-weight: 700;
     margin: 0;
+    background: var(--secondary-color);
+    color: color-contrast(var(--secondary-color) vs #fff, #000)
 }
 
 .container {
@@ -209,6 +211,8 @@ header h1 {
 
 .field {
     margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .field label {
@@ -219,7 +223,7 @@ header h1 {
 }
 
 .field input {
-    width: 100%;
+    /* width: 100%; */
     padding: 10px;
     border-radius: var(--border-radius);
     border: 1px solid #444;
@@ -251,7 +255,7 @@ header h1 {
 
 .toggle-btn.active {
     background: var(--primary-color);
-    color: #000;
+    color: var(--text);
     font-weight: 700;
 }
 a{
@@ -263,13 +267,14 @@ a{
     padding: 12px;
     margin-top: 20px;
     background: var(--primary-color);
-    color: #000;
+    color: var(--text);
     font-weight: 700;
     font-size: 1.1rem;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: background 0.3s;
+    border: 1px solid #444;
 }
 
 #runBtn:hover {
@@ -328,4 +333,11 @@ footer {
     background: var(--secondary-color);
     font-size: 0.8rem;
     color: #aaa;
+}
+.logo-banner{
+    display: flex;
+    justify-content: space-evenly;
+}
+.logo{
+    max-width: 200px;
 }

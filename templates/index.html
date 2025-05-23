@@ -8,13 +8,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
     <style>
+        :root {
+        --primary: {{ theme.primary|default('#ff0000') }};
+        --secondary: {{ theme.secondary|default('#ffffff') }};
+        --background: {{ theme.background|default('#ffffff') }};
+        --text: {{ theme.text|default('#000000') }};
+        --speedometer_gradient_1: {{theme.speedometer_gradient_1|default('#c3dcf4')}};
+        --speedometer_gradient_2: {{theme.speedometer_gradient_2|default('#2caee8')}};
+        --speedometer_gradient_3: {{theme.speedometer_gradient_3|default('#0099dc')}};
+        }
+        body {
+        background: var(--background);
+        color: var(--text);
+        }
+        .btn-primary {
+        background: var(--primary);
+        color: #fff;
+        }
+        .btn-secondary {
+        background: var(--secondary);
+        color: #fff;
+        }
         /* Apply Montserrat font to the entire body */
         body {
             font-family: 'Montserrat', sans-serif;
         }
-
-
-
         .field label,
         #runBtn,
         #output h2,
@@ -32,9 +50,16 @@
 
 <body>
     <header>
-        <!-- <img src="/static/logo.svg" alt=" Logo" class="logo"> -->
-        <!-- <img src="/static/logo.svg" alt=" Logo" class="logo">
-        <img src="/static/logo.png" alt=" Logo" class="logo"> -->
+        <div id="logo-gallery" class="logo-banner">
+            <!-- <p>Add image paths in the env.yaml file </p> -->
+            {% if logos %}
+                {% for logo in logos %}
+                    <img class="logo" src="{{ logo }}" alt="Logo">
+                {% endfor %}
+            {% else %}
+                <!-- <p>No logos to display.</p> -->
+            {% endif %}
+        </div>
 
         <h1>Iperf3 GUI</h1>
         <p id="iperf_version">Loading version...</p>
