@@ -243,7 +243,19 @@ def iperf_version():
         output, _ = process.communicate()
         return output.strip()
 
-    version = get_iperf_version()
+    def get_host_name_of_client():
+        cmd = "hostname"
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            shell=True
+        )
+        output, _ = process.communicate()
+        return output.strip()
+
+    version = str(get_iperf_version()) +" client running on: "+ str(get_host_name_of_client())
     return jsonify({"version": version}), 200
 
 if __name__ == "__main__":
