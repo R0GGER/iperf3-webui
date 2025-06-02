@@ -10,6 +10,8 @@ COPY templates ./templates
 COPY app.py .
 
 COPY requirements.txt .
+COPY env.yaml .
+
 
 RUN pip install --requirement requirements.txt
 
