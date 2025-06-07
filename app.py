@@ -16,6 +16,7 @@ output_lines = []
 streams = 0
 selected_unit = "Mbits"
 
+
 def convert_bandwidth(value, target_unit="Gbits"):
     """
     Args:
@@ -50,28 +51,33 @@ def convert_bandwidth(value, target_unit="Gbits"):
     converted_value = value_in_bits / unit_factors[target_unit]
     return float(converted_value)
 
+
 @app.route("/")
 def index():
-    with open('env.yaml') as f:
+    with open("env.yaml") as f:
         config = yaml.safe_load(f)
-    logos = config.get('logos', [])
-    theme = config.get('theme', {})
+    logos = config.get("logos", [])
+    theme = config.get("theme", {})
 
     default_target = ""
-    return render_template("index.html", default_target=default_target, logos = logos,theme=theme)
+    return render_template(
+        "index.html", default_target=default_target, logos=logos, theme=theme
+    )
+
 
 @app.route("/set_unit", methods=["POST"])
 def set_unit():
     global selected_unit
     data = request.get_json()
 
-    if not data or 'unit' not in data:
-        return jsonify({'error': 'No unit provided'}), 400
+    if not data or "unit" not in data:
+        return jsonify({"error": "No unit provided"}), 400
 
-    selected_unit = data['unit']
+    selected_unit = data["unit"]
     print(f"Received unit from frontend: {selected_unit}")
 
-    return jsonify({'status': 'success', 'selected_unit': selected_unit})
+    return jsonify({"status": "success", "selected_unit": selected_unit})
+
 
 @app.route("/run_iperf", methods=["POST"])
 def run_iperf():
@@ -89,8 +95,6 @@ def run_iperf():
     bandwidth = data.get("bandwidth", "0")
     port = data.get("port", "5201")
 
-
-
     if protocol not in ["tcp", "udp"]:
         return jsonify({"error": 'Invalid protocol. Must be "tcp" or "udp".'}), 400
 
@@ -99,7 +103,7 @@ def run_iperf():
 
     # Run iperf3 in a separate thread to avoid blocking the main thread
     def start_iperf():
-        cmd = ["iperf3", "-c", target,"-p",port, "-P", str(streams)]
+        cmd = ["iperf3", "-c", target, "-p", port, "-P", str(streams)]
         if protocol == "udp":
             cmd.append("-u")
             cmd.append("-b")
@@ -141,7 +145,7 @@ def stream_iperf():
         global output_lines, streams
         process_done = False  # Track process completion
         if streams == 1:
-            while True: 
+            while True:
                 if output_lines:
                     if "out-of-order" in output_lines[0]:
                         print(f"--- TEST COMPLETED ---\n\n")
@@ -191,7 +195,7 @@ def stream_iperf():
                             bandwidth_values.append(0)
                     if output_lines:
                         output_lines.pop(0)
-                   
+
             yield f"data: {SUM_values[-1]}\n\n"
 
         else:
@@ -223,24 +227,21 @@ def stream_iperf():
                         process_done = True  # Mark process as done
                     elif process_done:  # Exit the generator when done
                         break
-                    
+
                     if output_lines:
                         output_lines.pop(0)
-                    
+
             yield f"data: {SUM_values[-1]}\n\n"
 
     return Response(generate_output(), content_type="text/event-stream")
+
 
 @app.route("/iperf_version", methods=["GET"])
 def iperf_version():
     def get_iperf_version():
         cmd = "iperf3 -v | head -n 1"
         process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            shell=True
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True
         )
         output, _ = process.communicate()
         return output.strip()
@@ -248,17 +249,18 @@ def iperf_version():
     def get_host_name_of_client():
         cmd = "hostname"
         process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            shell=True
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True
         )
         output, _ = process.communicate()
         return output.strip()
 
-    version = str(get_iperf_version()) +" client running on: "+ str(get_host_name_of_client())
+    version = (
+        str(get_iperf_version())
+        + " client running on: "
+        + str(get_host_name_of_client())
+    )
     return jsonify({"version": version}), 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
