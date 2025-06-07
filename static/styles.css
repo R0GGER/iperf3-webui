@@ -171,7 +171,12 @@ input, select {
     --background-color: var(--background);
     --border-radius: 5px;
 }
-
+.title{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+}
 body {
     background: var(--background-color);
     color: var(--accent-color);
