@@ -142,6 +142,9 @@ function drawSpeedometer(value) {
     ctx.stroke();
 
     drawMarkers(startAngle, endAngle);
+    // console.log("debug:",startAngle,endAngle)
+    // drawMarkers(-180, 180);
+
     drawNeedle(value);
 
    
@@ -177,11 +180,14 @@ function drawMarkers(startAngle, endAngle) {
 
     ctx.font = '16px Montserrat';
     ctx.fillStyle = getCSSVariable('--text');
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
     markerValues.forEach((markerValue) => {
         const markerAngle = startAngle + (markerValue / maxValue) * arcLength;
-        const xPos = (canvasSize / 2 + Math.cos(markerAngle) * markerRadius) - 16;
-        const yPos = (canvasSize / 2 + Math.sin(markerAngle) * markerRadius) ;
+        const xPos = canvasSize / 2 + Math.cos(markerAngle) * markerRadius;
+        const yPos = canvasSize / 2 + Math.sin(markerAngle) * markerRadius;
+        // console.log("debug:>>", Math.cos(markerAngle) * markerRadius, (markerValue / maxValue));
         ctx.fillText(markerValue.toFixed(1), xPos, yPos);
     });
 }
