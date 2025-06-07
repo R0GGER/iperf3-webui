@@ -103,7 +103,7 @@ def run_iperf():
 
     # Run iperf3 in a separate thread to avoid blocking the main thread
     def start_iperf():
-        cmd = ["iperf3", "-c", target, "-p", port, "-P", str(streams)]
+        cmd = ["iperf3", "-c", target, "-p", str(port), "-P", str(streams)]
         if protocol == "udp":
             cmd.append("-u")
             cmd.append("-b")
