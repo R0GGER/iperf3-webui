@@ -87,6 +87,8 @@ def run_iperf():
     streams = data.get("streams", 1)
     target = data.get("target", "192.168.1.226")
     bandwidth = data.get("bandwidth", "0")
+    port = data.get("port", "5201")
+
 
 
     if protocol not in ["tcp", "udp"]:
@@ -97,7 +99,7 @@ def run_iperf():
 
     # Run iperf3 in a separate thread to avoid blocking the main thread
     def start_iperf():
-        cmd = ["iperf3", "-c", target, "-P", str(streams)]
+        cmd = ["iperf3", "-c", target,"-p",port, "-P", str(streams)]
         if protocol == "udp":
             cmd.append("-u")
             cmd.append("-b")

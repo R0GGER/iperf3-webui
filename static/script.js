@@ -95,6 +95,8 @@ fetch('/iperf_version')
 
 const runBtn = document.getElementById('runBtn');
 const targetInput = document.getElementById('target');
+const targetPort = document.getElementById('port');
+
 // const protocolInput = document.getElementById('protocol');
 const streamsInput = document.getElementById('streams');
 const resultEl = document.getElementById('result');
@@ -262,6 +264,7 @@ function sendUnitToServer(selectedUnit) {
 
 runBtn.addEventListener('click', async () => {
     const target = targetInput.value;
+    const port = targetPort?.value || 5201;
     // const protocol = protocolInput.value;
     let bandwidth = bandwidth_value.value.trim();
     const regex = /^\d+(\.\d+)?[KMG]$/i;
@@ -275,13 +278,13 @@ runBtn.addEventListener('click', async () => {
     const streams = parseInt(streamsInput.value);
     console.log("streams=",streams);
     resultEl.textContent = "Running iPerf3...";
-    console.log(protocol,mode, streams, target)
+    console.log(protocol,mode, streams, target,port)
     try {
         // Start the iPerf3 process
         const response = await fetch('/run_iperf', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ protocol,mode, streams, target, bandwidth })
+            body: JSON.stringify({ protocol,mode, streams, target, bandwidth, port })
         });
 
         if (!response.ok) {

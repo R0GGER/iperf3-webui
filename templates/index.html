@@ -72,10 +72,18 @@
         </div>
 
         <div class="selectors">
-            <div class="field">
-                <label for="target">Target IP</label>
-                <input type="text" id="target" value="{{ default_target }}"
-                    placeholder="Enter Target IP (e.g., 192.168.1.2)">
+            <div class="field flex2">
+                <div class="flex2-childL">
+                    <label for="target">Target IP</label>
+                    <input type="text" id="target" value="{{ default_target }}"
+                        placeholder="Target IP">
+                </div>
+                <div class="flex2-childR">
+                    <label for="port">Port</label>
+                    <input type="text" id="port" value="{{ default_port }}"
+                        placeholder="5201">
+                </div>
+                
             </div>
             <div class="field">
                 <label for="protocol">Protocol</label>

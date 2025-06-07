@@ -214,7 +214,13 @@ header h1 {
     display: flex;
     flex-direction: column;
 }
-
+.flex2{
+    display: flex;
+    flex-direction: row;
+}
+.flex2-childR{
+    padding-left: 10px;
+}
 .field label {
     display: block;
     margin-bottom: 5px;
