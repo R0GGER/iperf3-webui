@@ -4,7 +4,10 @@
 Run network speed tests easily from **any device** — macOS, Linux, Windows, or even Android phones (via Termux).
 
 ---
-
+## Updates on v1.2.0.1 
+ - Adding custom port (iperf3 -p)
+ - Bug Fixes
+ 
 ## ✨ Features
 
 - 🌐 **Web-based GUI** — Works in any browser
