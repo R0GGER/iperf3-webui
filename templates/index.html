@@ -82,6 +82,17 @@
         </div>
 
         <div class="selectors">
+            <button id="openPopupBtn">Select Public iperf3 Server</button>
+            <div id="selectedServer"></div>
+            <div id="overlay"></div>
+            <div id="popup">
+                <h2>Select a Server</h2>
+                <input type="text" id="searchInput" placeholder="Search...">
+                <table id="csvTable">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
             <div class="field flex2">
                 <div class="flex2-childL">
                     <label for="target">Target IP</label>
