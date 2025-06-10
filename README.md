@@ -4,9 +4,9 @@
 Run network speed tests easily from **any device** — macOS, Linux, Windows, or even Android phones (via Termux).
 
 ---
-## Updates on v1.2.0.1 
- - Adding custom port (iperf3 -p)
- - Bug Fixes
+## Updates on v1.3.0.1 
+ - NEW FEATURE: Public Iperf3 server list integrated from (https://github.com/R0GGER/public-iperf3-servers) 
+ - code refactor (state.js to keep easy track of variable state)
  
 ## ✨ Features
 
