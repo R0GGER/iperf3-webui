@@ -2,25 +2,21 @@ import state from './state.js';
 import { updateSpeedometer } from './speedometer.js';
 
 const runBtn = document.getElementById('runBtn');
-const targetInput = document.getElementById('target');
-const targetPort = document.getElementById('port');
-const streamsInput = document.getElementById('streams');
 const resultEl = document.getElementById('result');
-const bandwidth_value = document.getElementById('bandwidth');
-
 runBtn.addEventListener('click', async () => {
-    const target = targetInput.value;
-    const port = targetPort?.value || 5201;
-    let bandwidth = bandwidth_value.value.trim();
+    const target = state.ip;
+    const port = state.port;
+    const streams = state.streams;
+    let bandwidth = state.bandwidth.trim();
+    const protocol = state.protocol;
+    const mode = state.mode;
+    console.log(target, port, streams, bandwidth, protocol, mode)
+
     const regex = /^\d+(\.\d+)?[KMG]$/i;
-    let protocol = state.protocol
-    let mode = state.mode
 
     if (!regex.test(bandwidth)) bandwidth = "0";
-    const streams = parseInt(streamsInput.value);
 
     resultEl.textContent = "Running iPerf3...";
-    console.log(protocol, mode, streams, target, bandwidth, port)
 
     try {
         const response = await fetch('/run_iperf', {

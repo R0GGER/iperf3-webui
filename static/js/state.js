@@ -1,4 +1,8 @@
 const state = {
+  ip: '',
+  port: '5201',
+  streams: '8',
+  bandwidth: '0',
   protocol: 'tcp',           // Default protocol
   mode: 'download',          // Default mode
   units: 'Mbps',             // Default unit
@@ -10,6 +14,34 @@ const state = {
 };
 
 export default {
+  get ip() {
+    return state.ip;
+  },
+  set ip(value) {
+    state.ip = value;
+  },
+
+  get port() {
+    return state.port;
+  },
+  set port(value) {
+    state.port = value;
+  },
+
+  get streams() {
+    return state.streams;
+  },
+  set streams(value) {
+    state.streams = value;
+  },
+
+  get bandwidth() {
+    return state.bandwidth;
+  },
+  set bandwidth(value) {
+    state.bandwidth = value;
+  },
+
   get protocol() {
     return state.protocol;
   },

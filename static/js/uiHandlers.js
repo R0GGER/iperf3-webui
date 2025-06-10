@@ -1,6 +1,28 @@
 import state from './state.js';
 import { sendUnitToServer } from './utils.js';
 
+document.getElementById('target').addEventListener('input', () => {
+    state.ip = document.getElementById('target').value;
+    // console.log('Updated IP:', state.ip);
+});
+
+document.getElementById('port').addEventListener('input', () => {
+    state.port = document.getElementById('port').value;
+    // console.log('Updated port:', state.port);
+});
+
+document.getElementById('streams').addEventListener('input', () => {
+    state.streams = document.getElementById('streams').value;
+    // console.log('Updated streams:', state.streams);
+});
+
+document.getElementById('bandwidth').addEventListener('input', () => {
+    state.bandwidth = document.getElementById('bandwidth').value;
+    // console.log('Updated bandwidth:', state.bandwidth);
+});
+
+
+
 document.getElementById('uploadBtn').addEventListener('click', () => {
     document.getElementById('uploadBtn').classList.add('active');
     document.getElementById('downloadBtn').classList.remove('active');

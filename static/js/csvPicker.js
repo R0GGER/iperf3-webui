@@ -1,4 +1,4 @@
-const csvUrl = "/proxy/iperf3-csv"; 
+const csvUrl = "/proxy/iperf3-csv";
 let csvData = [];
 
 async function fetchAndParseCSV(url) {
@@ -43,7 +43,13 @@ function populateTable(data) {
       tr.appendChild(td);
     });
     tr.addEventListener("click", () => {
-      const selected = headers.map((h, i) => `${h}: ${row[i]}`).join("<br>");
+      let selected = "";
+      let dict = {}
+      for (let i = 0; i < headers.length; i++) {
+        selected += `${headers[i]}: ${row[i]}<br>`;
+        dict[headers[i]] = row[i]
+      }
+      console.log(dict)
       const selectedDiv = document.getElementById("selectedServer");
       selectedDiv.innerHTML = selected;
       selectedDiv.style.display = "block";
