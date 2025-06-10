@@ -1,3 +1,5 @@
+import state from './state.js';
+
 const csvUrl = "/proxy/iperf3-csv";
 let csvData = [];
 
@@ -17,6 +19,7 @@ function hidePopup() {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("popup").style.display = "none";
 }
+
 
 function populateTable(data) {
   const thead = document.querySelector("#csvTable thead");
@@ -45,11 +48,34 @@ function populateTable(data) {
     tr.addEventListener("click", () => {
       let selected = "";
       let dict = {}
+      selected += '<div class="bubble-wrap">'
       for (let i = 0; i < headers.length; i++) {
-        selected += `${headers[i]}: ${row[i]}<br>`;
+        if (headers[i] != "IP/HOST") {
+          if (headers[i] == "COUNTRY") {
+            const countryCode = row[i].toLowerCase(); // e.g., "dz"
+            selected += `<div class="bubble">${headers[i]} : <img src="https://flagcdn.com/w40/${countryCode}.png" alt="${row[i]} flag" style="vertical-align: middle; height: 16px;"></div><br>`;
+          }
+          else {
+            selected += `<div class="bubble">${headers[i]} : ${row[i]}</div><br>`;
+
+          }
+        }
         dict[headers[i]] = row[i]
       }
+      selected += '</div>'
+
       console.log(dict)
+      state.ip = dict["IP/HOST"]
+      if (dict["PORT"].includes('-')) {
+        let port = dict["PORT"]
+        let parts = port.split('-');
+        state.port = parts[0]
+      }
+      else {
+        state.port = dict["PORT"]
+      }
+      document.getElementById('target').value = state.ip;
+      document.getElementById('port').value = state.port;
       const selectedDiv = document.getElementById("selectedServer");
       selectedDiv.innerHTML = selected;
       selectedDiv.style.display = "block";
