@@ -65,6 +65,18 @@ def index():
         "index.html", default_target=default_target, logos=logos, theme=theme
     )
 
+@app.route("/test")
+def test():
+    with open("env.yaml") as f:
+        config = yaml.safe_load(f)
+    logos = config.get("logos", [])
+    theme = config.get("theme", {})
+
+    default_target = ""
+    return render_template(
+        "test.html", default_target=default_target, logos=logos, theme=theme
+    )
+
 @app.route("/proxy/iperf3-csv")
 def proxy_csv():
     url = "https://export.iperf3serverlist.net/listed_iperf3_servers.csv"
