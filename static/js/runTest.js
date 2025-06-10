@@ -25,7 +25,10 @@ runBtn.addEventListener('click', async () => {
             body: JSON.stringify({ protocol, mode, streams, target, bandwidth, port })
         });
 
-        if (!response.ok) throw new Error('Error starting iPerf3.');
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Error starting iPerf3.');
+        }
 
         const eventSource = new EventSource('/stream_iperf');
 
