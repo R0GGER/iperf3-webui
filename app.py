@@ -3,6 +3,7 @@ import subprocess
 import threading
 import time
 import yaml
+import requests
 
 from flask import Flask, Response, jsonify, render_template, request
 
@@ -64,6 +65,11 @@ def index():
         "index.html", default_target=default_target, logos=logos, theme=theme
     )
 
+@app.route("/proxy/iperf3-csv")
+def proxy_csv():
+    url = "https://export.iperf3serverlist.net/listed_iperf3_servers.csv"
+    resp = requests.get(url)
+    return Response(resp.content, content_type="text/csv")
 
 @app.route("/set_unit", methods=["POST"])
 def set_unit():

@@ -1,0 +1,64 @@
+import state from './state.js';
+import { updateSpeedometer } from './speedometer.js';
+
+const runBtn = document.getElementById('runBtn');
+const resultEl = document.getElementById('result');
+runBtn.addEventListener('click', async () => {
+    const target = state.ip;
+    const port = state.port;
+    const streams = state.streams;
+    let bandwidth = state.bandwidth.trim();
+    const protocol = state.protocol;
+    const mode = state.mode;
+    console.log(target, port, streams, bandwidth, protocol, mode)
+
+    const regex = /^\d+(\.\d+)?[KMG]$/i;
+
+    if (!regex.test(bandwidth)) bandwidth = "0";
+
+    resultEl.textContent = "Running iPerf3...";
+
+    try {
+        const response = await fetch('/run_iperf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ protocol, mode, streams, target, bandwidth, port })
+        });
+
+        if (!response.ok) throw new Error('Error starting iPerf3.');
+
+        const eventSource = new EventSource('/stream_iperf');
+
+        eventSource.onmessage = (event) => {
+            const avg = state.bandwidthCount > 0 ? (state.bandwidthSum / state.bandwidthCount).toFixed(2) : 0;
+            if (event.data === "--- TEST COMPLETED ---") {
+                resultEl.textContent += "Test completed successfully.\n";
+                eventSource.close();
+            } else {
+                let bandwidthValue = parseFloat(event.data);
+                if (!isNaN(bandwidthValue)) {
+                    if (bandwidthValue >= 0) {
+                        updateSpeedometer(bandwidthValue);
+                        state.bandwidthSum += bandwidthValue;
+                        state.bandwidthCount += 1;
+                        if (bandwidthValue > state.maxBandwidth) state.maxBandwidth = bandwidthValue;
+
+                        document.querySelector(".status").textContent = "Status: Running";
+                        resultEl.textContent += event.data + '\n';
+                    } else {
+                        document.querySelector(".status").textContent = "Status: Completed";
+                        document.querySelector(".avg_speed").textContent = `AVG: ${avg} ${state.units}`;
+                        document.querySelector(".max_speed").textContent = `MAX: ${state.maxBandwidth} ${state.units}`;
+                    }
+                }
+            }
+        };
+
+        eventSource.onerror = () => {
+            resultEl.textContent = "Error occurred while streaming the output.";
+            eventSource.close();
+        };
+    } catch (error) {
+        resultEl.textContent = error.message;
+    }
+});
