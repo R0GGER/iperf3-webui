@@ -113,6 +113,9 @@ def run_iperf():
     bandwidth = data.get("bandwidth", "0")
     port = data.get("port", "5201")
 
+    if not target:
+        return jsonify({"error": "Target is required."}), 400
+
     if protocol not in ["tcp", "udp"]:
         return jsonify({"error": 'Invalid protocol. Must be "tcp" or "udp".'}), 400
 
@@ -130,12 +133,11 @@ def run_iperf():
             cmd.append("10")
         if mode == "download":
             cmd.append("-R")
-        cmd.append("--forceflush")
         print(cmd)
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             text=True,
             bufsize=1,
         )
