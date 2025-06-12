@@ -37,7 +37,11 @@ runBtn.addEventListener('click', async () => {
             if (event.data === "--- TEST COMPLETED ---") {
                 resultEl.textContent += "Test completed successfully.\n";
                 eventSource.close();
-            } else {
+            }
+            else if (event.data === "server is busy"){
+                document.querySelector(".status").textContent = "Status: Server is Busy";
+            }
+            else {
                 let bandwidthValue = parseFloat(event.data);
                 if (!isNaN(bandwidthValue)) {
                     if (bandwidthValue >= 0) {

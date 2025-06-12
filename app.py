@@ -228,6 +228,10 @@ def stream_iperf():
                         break
                     output_line = output_lines[0]
                     print("debug else: ", output_line)
+                    if "server is busy" in output_line or "unable to send control message" in output_line:
+                        print("data: server is busy\n\n")
+                        yield f"data: server is busy\n\n"
+
                     bandwidth_match = re.search(bandwidth_pattern, output_line)
                     if (
                         "[SUM]" in output_line
