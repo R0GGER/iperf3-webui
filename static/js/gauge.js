@@ -26,25 +26,40 @@ function initGauge() {
 
     const target = document.getElementById('speedometer');
     gauge = new Gauge(target).setOptions(opts);
-    gauge.maxValue = 100;
+    gauge.maxValue = 10;
     gauge.setMinValue(0);
     gauge.animationSpeed = 32;
     gauge.set(0);
 }
 
 function updateGauge(value) {
-    if (value > gauge.maxValue) {
-        const newMax = value * 1.2;
-        const step = newMax / 5; // 5 intervals
-        const niceStep = Math.ceil(step / 100) * 100;
+    if (value > gauge.maxValue || value < gauge.maxValue / 5) {
+        let newMax = value > 0 ? value * 1.2 : 1;
+
+        const niceSteps = [1, 2, 5];
+        let step;
+        const magnitude = Math.pow(10, Math.floor(Math.log10(newMax / 5)));
+        for (let i = 0; i < niceSteps.length; i++) {
+            step = niceSteps[i] * magnitude;
+            if (newMax / step < 6) {
+                break;
+            }
+        }
         
-        gauge.maxValue = niceStep * 5;
+        gauge.maxValue = Math.ceil(newMax / step) * step;
+
+        const labels = [];
+        const numLabels = Math.round(gauge.maxValue / step);
+        for (let i = 0; i <= numLabels; i++) {
+            labels.push(parseFloat((i * step).toPrecision(15)));
+        }
+
         gauge.setOptions({
             staticLabels: {
                 font: "11px sans-serif",
-                labels: [0, niceStep, niceStep * 2, niceStep * 3, niceStep * 4, gauge.maxValue],
+                labels: labels,
                 color: "#ffffff",
-                fractionDigits: 0
+                fractionDigits: step < 1 ? 2 : 0
             }
         });
     }
