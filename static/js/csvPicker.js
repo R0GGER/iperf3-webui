@@ -41,8 +41,12 @@ function populateTable(data) {
   rows.forEach((row) => {
     const tr = document.createElement("tr");
     row.forEach(cell => {
+      let displayCell = cell;
+      if (displayCell.includes(' ') && displayCell.startsWith('"') && displayCell.endsWith('"')) {
+        displayCell = displayCell.slice(1, -1);
+      }
       const td = document.createElement("td");
-      td.textContent = cell;
+      td.textContent = displayCell;
       tr.appendChild(td);
     });
     tr.addEventListener("click", () => {

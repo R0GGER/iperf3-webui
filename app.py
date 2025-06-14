@@ -113,6 +113,9 @@ def run_iperf():
     bandwidth = data.get("bandwidth", "0")
     port = data.get("port", "5201")
 
+    if not target:
+        return jsonify({"error": "Target is required."}), 400
+
     if protocol not in ["tcp", "udp"]:
         return jsonify({"error": 'Invalid protocol. Must be "tcp" or "udp".'}), 400
 
@@ -130,12 +133,11 @@ def run_iperf():
             cmd.append("10")
         if mode == "download":
             cmd.append("-R")
-        cmd.append("--forceflush")
         print(cmd)
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             text=True,
             bufsize=1,
         )
@@ -226,6 +228,10 @@ def stream_iperf():
                         break
                     output_line = output_lines[0]
                     print("debug else: ", output_line)
+                    if "server is busy" in output_line or "unable to send control message" in output_line:
+                        print("data: server is busy\n\n")
+                        yield f"data: server is busy\n\n"
+
                     bandwidth_match = re.search(bandwidth_pattern, output_line)
                     if (
                         "[SUM]" in output_line
