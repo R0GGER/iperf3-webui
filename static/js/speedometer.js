@@ -75,10 +75,15 @@ function drawMarkers(startAngle, endAngle) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  values.forEach(val => {
+  values.forEach((val, idx) => {
     const angle = startAngle + (val / maxValue) * (endAngle - startAngle);
-    const x = canvasSize / 2 + Math.cos(angle) * radius;
-    const y = canvasSize / 2 + Math.sin(angle) * radius;
+    let x = canvasSize / 2 + Math.cos(angle) * radius;
+    let y = canvasSize / 2 + Math.sin(angle) * radius;
+
+    if (idx === 0 || idx === values.length - 1) {
+      y -= 16; // adjust this value as needed
+    }
+
     ctx.fillText(val.toFixed(1), x, y);
   });
 }

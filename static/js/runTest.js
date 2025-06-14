@@ -1,5 +1,5 @@
 import state from './state.js';
-import { updateSpeedometer } from './speedometer.js';
+import { updateGauge } from './gauge.js';
 
 const runBtn = document.getElementById('runBtn');
 const resultEl = document.getElementById('result');
@@ -17,6 +17,9 @@ runBtn.addEventListener('click', async () => {
     if (!regex.test(bandwidth)) bandwidth = "0";
 
     resultEl.textContent = "Running iPerf3...";
+    state.bandwidthSum = 0;
+    state.bandwidthCount = 0;
+    state.maxBandwidth = 0;
 
     try {
         const response = await fetch('/run_iperf', {
@@ -25,7 +28,10 @@ runBtn.addEventListener('click', async () => {
             body: JSON.stringify({ protocol, mode, streams, target, bandwidth, port })
         });
 
-        if (!response.ok) throw new Error('Error starting iPerf3.');
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Error starting iPerf3.');
+        }
 
         const eventSource = new EventSource('/stream_iperf');
 
@@ -34,11 +40,15 @@ runBtn.addEventListener('click', async () => {
             if (event.data === "--- TEST COMPLETED ---") {
                 resultEl.textContent += "Test completed successfully.\n";
                 eventSource.close();
-            } else {
+            }
+            else if (event.data === "server is busy"){
+                document.querySelector(".status").textContent = "Status: Server is Busy";
+            }
+            else {
                 let bandwidthValue = parseFloat(event.data);
                 if (!isNaN(bandwidthValue)) {
                     if (bandwidthValue >= 0) {
-                        updateSpeedometer(bandwidthValue);
+                        updateGauge(bandwidthValue);
                         state.bandwidthSum += bandwidthValue;
                         state.bandwidthCount += 1;
                         if (bandwidthValue > state.maxBandwidth) state.maxBandwidth = bandwidthValue;
