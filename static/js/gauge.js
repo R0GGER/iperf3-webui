@@ -1,3 +1,4 @@
+import { getCSSVariable } from "./utils.js";
 let gauge;
 
 function initGauge() {
@@ -8,7 +9,7 @@ function initGauge() {
         pointer: {
             length: 0.5,
             strokeWidth: 0.025,
-            color: '#00E1FF'
+            color: getCSSVariable('--speedometer_gradient_2')
         },
         staticLabels: {
             font: "11px sans-serif",
@@ -16,7 +17,8 @@ function initGauge() {
             color: "#ffffff",
             fractionDigits: 0
         },
-        percentColors: [[0.0, "#EC30BD" ], [0.50, "#4FA6E9"], [1.0, "#00E1FF"]],
+
+        percentColors: [[0.0, "getCSSVariable('--speedometer_gradient_1')"], [0.50, getCSSVariable('--speedometer_gradient_2')], [1.0, getCSSVariable('--speedometer_gradient_3')]],
         limitMax: false,
         limitMin: false,
         highDpiSupport: true,

@@ -1,5 +1,4 @@
 import state from './state.js';
-import { sendUnitToServer } from './utils.js';
 
 document.getElementById('target').addEventListener('input', () => {
     state.ip = document.getElementById('target').value;
@@ -56,9 +55,8 @@ document.getElementById('udpBtn').addEventListener('click', () => {
         ['Kbits', 'Mbits', 'Gbits'].forEach(u => document.getElementById(u).classList.remove('active'));
         document.getElementById(unit).classList.add('active');
 
-        state.units = unit;
+        state.units = unit.replace('bits', 'bps');
         document.querySelector(".units").textContent = unit.replace('bits', 'bps');
-        sendUnitToServer(state.units);
-        console.log(`Selected units: ${state.units}`);
+        console.log(`Selected units: ${state.units.replace('bits', 'bps')}`);
     });
 });

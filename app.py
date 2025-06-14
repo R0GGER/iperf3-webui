@@ -15,23 +15,22 @@ SUM_values = []
 
 output_lines = []
 streams = 0
-selected_unit = "Mbits"
+selected_unit = "Mbps"
 
-
-def convert_bandwidth(value, target_unit="Gbits"):
+def convert_bandwidth(value, target_unit="Gbps"):
+    print(value)
     """
     Args:
-        value (str): The input bandwidth value (e.g., "2.7 Gbits/sec", "2 Mbits/sec").
-        target_unit (str): The target unit ("Gbits", "Mbits", or "Kbits").
+        value (str): The input bandwidth value (e.g., "2.7 Gbps", "2 Mbps").
+        target_unit (str): The target unit ("Gbps", "Mbps", or "Kbps").
     Returns:
         float: The converted bandwidth value in the target unit.
     """
     unit_factors = {
-        "Kbits": 1_000,
-        "Mbits": 1_000_000,
-        "Gbits": 1_000_000_000,
+        "Kbps": 1_000,
+        "Mbps": 1_000_000,
+        "Gbps": 1_000_000_000,
     }
-
     import re
 
     pattern = r"(\d+\.?\d*)\s*(K|M|G)bits/sec"
@@ -42,7 +41,8 @@ def convert_bandwidth(value, target_unit="Gbits"):
 
     number, unit = match.groups()
     number = float(number)
-    source_unit = unit + "bits"
+    source_unit = unit + "bps"
+    print("DEBUG unit",source_unit,target_unit,source_unit not in unit_factors,target_unit not in unit_factors)
 
     if source_unit not in unit_factors or target_unit not in unit_factors:
         return 0.0
@@ -50,6 +50,7 @@ def convert_bandwidth(value, target_unit="Gbits"):
     value_in_bits = number * unit_factors[source_unit]
 
     converted_value = value_in_bits / unit_factors[target_unit]
+    print(value, converted_value)
     return float(converted_value)
 
 
@@ -83,23 +84,23 @@ def proxy_csv():
     resp = requests.get(url)
     return Response(resp.content, content_type="text/csv")
 
-@app.route("/set_unit", methods=["POST"])
-def set_unit():
-    global selected_unit
-    data = request.get_json()
+# @app.route("/set_unit", methods=["POST"])
+# def set_unit():
+#     global selected_unit
+#     data = request.get_json()
 
-    if not data or "unit" not in data:
-        return jsonify({"error": "No unit provided"}), 400
+#     if not data or "unit" not in data:
+#         return jsonify({"error": "No unit provided"}), 400
 
-    selected_unit = data["unit"]
-    print(f"Received unit from frontend: {selected_unit}")
+#     selected_unit = data["unit"]
+#     print(f"Received unit from frontend: {selected_unit}")
 
-    return jsonify({"status": "success", "selected_unit": selected_unit})
+#     return jsonify({"status": "success", "selected_unit": selected_unit})
 
 
 @app.route("/run_iperf", methods=["POST"])
 def run_iperf():
-    global output_lines, streams
+    global output_lines, streams, selected_unit
     output_lines = []
 
     data = request.get_json()
@@ -112,7 +113,8 @@ def run_iperf():
     target = data.get("target", "192.168.1.226")
     bandwidth = data.get("bandwidth", "0")
     port = data.get("port", "5201")
-
+    selected_unit = data.get("units","Mbits")
+    print("DEBUG",protocol,mode,streams,target,bandwidth,port,selected_unit)
     if not target:
         return jsonify({"error": "Target is required."}), 400
 
@@ -133,6 +135,7 @@ def run_iperf():
             cmd.append("10")
         if mode == "download":
             cmd.append("-R")
+        cmd.append("--forceflush")
         print(cmd)
         process = subprocess.Popen(
             cmd,
@@ -162,7 +165,8 @@ def run_iperf():
 @app.route("/stream_iperf", methods=["GET"])
 def stream_iperf():
     def generate_output():
-        global output_lines, streams
+        global output_lines, streams, selected_unit
+        print("DEBUG unit:",selected_unit)
         process_done = False  # Track process completion
         if streams == 1:
             while True:
@@ -227,7 +231,7 @@ def stream_iperf():
                         process_done = True  # Mark process as done
                         break
                     output_line = output_lines[0]
-                    print("debug else: ", output_line)
+                    # print("debug else: ", output_line)
                     if "server is busy" in output_line or "unable to send control message" in output_line:
                         print("data: server is busy\n\n")
                         yield f"data: server is busy\n\n"
@@ -239,7 +243,7 @@ def stream_iperf():
                         and "sender" not in output_line
                     ):
                         if bandwidth_match:
-                            print(">>: ", output_line)
+                            # print(">>: ", output_line)
                             sum_str = bandwidth_match.group(0)
                             sum_g = convert_bandwidth(sum_str, selected_unit)
                             SUM_values.append(sum_g)
