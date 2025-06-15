@@ -321,7 +321,7 @@ a {
     width: 100%;
     max-width: 442px;
     height: auto;
-    transform: translate(34px, -16px);
+    /* transform: translate(34px, -16px); */
 
 }
 
