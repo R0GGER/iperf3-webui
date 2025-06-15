@@ -4,6 +4,7 @@ import threading
 import time
 import yaml
 import requests
+import os
 
 from flask import Flask, Response, jsonify, render_template, request
 
@@ -289,6 +290,6 @@ def iperf_version():
     )
     return jsonify({"version": version}), 200
 
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    debug_mode = os.environ.get("FLASK_DEBUG", "false").lower() in ["true", "1", "t"]
+    app.run(host="0.0.0.0", port=5000, debug=debug_mode)
