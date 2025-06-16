@@ -171,6 +171,12 @@ def stream_iperf():
         process_done = False  # Track process completion
         if streams == 1:
             while True:
+                if not output_lines:
+                    if process_done:
+                        break
+                    time.sleep(0.1)
+                    continue
+
                 if output_lines:
                     if "out-of-order" in output_lines[0]:
                         print(f"--- TEST COMPLETED ---\n\n")
@@ -207,12 +213,12 @@ def stream_iperf():
                             or not output_line.strip()
                         ):
                             print("hold on to old value")
-                            print(f"data: {bandwidth_values[-1]}\n\n")
-                            yield f"data: {bandwidth_values[-1]}\n\n"
+                            if bandwidth_values:
+                                print(f"data: {bandwidth_values[-1]}\n\n")
+                                yield f"data: {bandwidth_values[-1]}\n\n"
                         elif process_done:  # Exit the generator when done
                             print(f"--- TEST COMPLETED ---\n\n")
                             yield f"data: -1\n\n"
-                            process_done = True  # Mark process as done
                             break
                         else:
                             print(f"data: {0}\n\n")
@@ -221,10 +227,17 @@ def stream_iperf():
                     if output_lines:
                         output_lines.pop(0)
 
-            yield f"data: {SUM_values[-1]}\n\n"
+            if SUM_values:
+                yield f"data: {SUM_values[-1]}\n\n"
 
         else:
             while True:
+                if not output_lines:
+                    if process_done:
+                        break
+                    time.sleep(0.1)
+                    continue
+
                 if output_lines:
                     if "out-of-order" in output_lines[0]:
                         print(f"--- TEST COMPLETED ---\n\n")
@@ -260,7 +273,8 @@ def stream_iperf():
                     if output_lines:
                         output_lines.pop(0)
 
-            yield f"data: {SUM_values[-1]}\n\n"
+            if SUM_values:
+                yield f"data: {SUM_values[-1]}\n\n"
 
     return Response(generate_output(), content_type="text/event-stream")
 
