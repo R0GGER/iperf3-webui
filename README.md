@@ -35,7 +35,7 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 #### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/iperf3-webui.git
+git clone https://github.com/R0GGER/iperf3-webui.git
 cd iperf3-webui
 ```
 
@@ -63,9 +63,7 @@ By default, the app will be available at:
 #### 1. Option A: Build and run the Docker image
 
 ```bash
-docker build -f Containerfile -t iperf3-webui:v1.3.0.3 
-docker run -it -p 5000:5000 -v ./env.yaml:/app/env.yaml iperf3-webui:v1.3.0.3
-
+docker compose up --build -d
 ```
 #### 2. Option B: Pull pre-built image from GitHub Container Registry
 
