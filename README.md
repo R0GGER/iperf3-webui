@@ -58,25 +58,12 @@ By default, the app will be available at:
 
 ---
 
-### 🐳 Option 2: Run as Docker Container (or Podman)
+### 🐳 Option 2: Run as Docker Container
 
 #### 1. Option A: Build and run the Docker image
 
 ```bash
 docker compose up --build -d
-```
-#### 2. Option B: Pull pre-built image from GitHub Container Registry
-
-```bash
-docker pull ghcr.io/maddydev-glitch/iperf3-webui:v1.3.0.3
-```
-📦 This pulls the latest pre-built image from:
-https://github.com/MaddyDev-glitch/iperf3-webui/pkgs/container/iperf3-webui
-
-🎨 Customize the Theme Using env.yaml
-If you want to apply custom themes or settings, mount the env.yaml file into the container:
-```bash
-docker run -it -p 5000:5000 -v ./env.yaml:/app/env.yaml ghcr.io/maddydev-glitch/iperf3-webui:v1.3.0.3
 ```
 
 Now access the Web UI at 👉 http://localhost:5000 from your browser.
