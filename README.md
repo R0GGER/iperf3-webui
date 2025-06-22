@@ -4,7 +4,7 @@
 Run network speed tests easily from **any device** — macOS, Linux, Windows, or even Android phones (via Termux).
 
 ---
-## Updates on v1.3.0.3 
+## Updates on v1.3.0.4 
  - NEW FEATURE: Public Iperf3 server list integrated from (https://github.com/R0GGER/public-iperf3-servers) 
  - code refactor (state.js to keep easy track of variable state)
  
@@ -63,14 +63,14 @@ By default, the app will be available at:
 #### 1. Option A: Build and run the Docker image
 
 ```bash
-docker build -f Containerfile -t iperf3-webui:v1.3.0.3 
-docker run -it -p 5000:5000 -v ./env.yaml:/app/env.yaml iperf3-webui:v1.3.0.3
+docker build -f Containerfile -t iperf3-webui:v1.3.0.4 
+docker run -it -p 5000:5000 -v ./env.yaml:/app/env.yaml iperf3-webui:v1.3.0.4
 
 ```
 #### 2. Option B: Pull pre-built image from GitHub Container Registry
 
 ```bash
-docker pull ghcr.io/maddydev-glitch/iperf3-webui:v1.3.0.3
+docker pull ghcr.io/maddydev-glitch/iperf3-webui:v1.3.0.4
 ```
 📦 This pulls the latest pre-built image from:
 https://github.com/MaddyDev-glitch/iperf3-webui/pkgs/container/iperf3-webui
@@ -78,7 +78,7 @@ https://github.com/MaddyDev-glitch/iperf3-webui/pkgs/container/iperf3-webui
 🎨 Customize the Theme Using env.yaml
 If you want to apply custom themes or settings, mount the env.yaml file into the container:
 ```bash
-docker run -it -p 5000:5000 -v ./env.yaml:/app/env.yaml ghcr.io/maddydev-glitch/iperf3-webui:v1.3.0.3
+docker run -it -p 5000:5000 -v ./env.yaml:/app/env.yaml ghcr.io/maddydev-glitch/iperf3-webui:v1.3.0.4
 ```
 
 Now access the Web UI at 👉 http://localhost:5000 from your browser.
