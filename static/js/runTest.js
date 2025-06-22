@@ -17,7 +17,7 @@ runBtn.addEventListener('click', async () => {
 
     if (!regex.test(bandwidth)) bandwidth = "0";
 
-    resultEl.textContent = "Running iPerf3...";
+    resultEl.textContent = "Running iPerf3...\n";
     state.bandwidthSum = 0;
     state.bandwidthCount = 0;
     state.maxBandwidth = 0;
@@ -38,6 +38,12 @@ runBtn.addEventListener('click', async () => {
         let eventSource = new EventSource('/stream_iperf');
 
         eventSource.onmessage = (event) => {
+            if (parseFloat(event.data) < 0) {
+                document.querySelector(".status").textContent = "Status: Complete";
+                eventSource.close();
+                return;
+            }
+
             const avg = state.bandwidthCount > 0 ? (state.bandwidthSum / state.bandwidthCount).toFixed(2) : 0;
             if (event.data === "--- TEST COMPLETED ---") {
                 resultEl.textContent += "Test completed successfully.\n";
@@ -58,7 +64,7 @@ runBtn.addEventListener('click', async () => {
                         document.querySelector(".status").textContent = "Status: Running";
                         resultEl.textContent += event.data + '\n';
                     } else {
-                        document.querySelector(".status").textContent = "Status: Completed";
+                        document.querySelector(".status").textContent = "Status: Complete";
                         document.querySelector(".avg_speed").textContent = `AVG: ${avg} ${units}`;
                         document.querySelector(".max_speed").textContent = `MAX: ${state.maxBandwidth} ${units}`;
                     }

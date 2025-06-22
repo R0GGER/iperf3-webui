@@ -4,6 +4,7 @@ import threading
 import time
 import yaml
 import requests
+import os
 
 from flask import Flask, Response, jsonify, render_template, request
 
@@ -170,6 +171,12 @@ def stream_iperf():
         process_done = False  # Track process completion
         if streams == 1:
             while True:
+                if not output_lines:
+                    if process_done:
+                        break
+                    time.sleep(0.1)
+                    continue
+
                 if output_lines:
                     if "out-of-order" in output_lines[0]:
                         print(f"--- TEST COMPLETED ---\n\n")
@@ -206,12 +213,12 @@ def stream_iperf():
                             or not output_line.strip()
                         ):
                             print("hold on to old value")
-                            print(f"data: {bandwidth_values[-1]}\n\n")
-                            yield f"data: {bandwidth_values[-1]}\n\n"
+                            if bandwidth_values:
+                                print(f"data: {bandwidth_values[-1]}\n\n")
+                                yield f"data: {bandwidth_values[-1]}\n\n"
                         elif process_done:  # Exit the generator when done
                             print(f"--- TEST COMPLETED ---\n\n")
                             yield f"data: -1\n\n"
-                            process_done = True  # Mark process as done
                             break
                         else:
                             print(f"data: {0}\n\n")
@@ -220,10 +227,17 @@ def stream_iperf():
                     if output_lines:
                         output_lines.pop(0)
 
-            yield f"data: {SUM_values[-1]}\n\n"
+            if SUM_values:
+                yield f"data: {SUM_values[-1]}\n\n"
 
         else:
             while True:
+                if not output_lines:
+                    if process_done:
+                        break
+                    time.sleep(0.1)
+                    continue
+
                 if output_lines:
                     if "out-of-order" in output_lines[0]:
                         print(f"--- TEST COMPLETED ---\n\n")
@@ -259,7 +273,8 @@ def stream_iperf():
                     if output_lines:
                         output_lines.pop(0)
 
-            yield f"data: {SUM_values[-1]}\n\n"
+            if SUM_values:
+                yield f"data: {SUM_values[-1]}\n\n"
 
     return Response(generate_output(), content_type="text/event-stream")
 
@@ -289,6 +304,6 @@ def iperf_version():
     )
     return jsonify({"version": version}), 200
 
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    debug_mode = os.environ.get("FLASK_DEBUG", "false").lower() in ["true", "1", "t"]
+    app.run(host="0.0.0.0", port=5000, debug=debug_mode)
