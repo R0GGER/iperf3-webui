@@ -34,7 +34,7 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 #### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/iperf3-webui.git
+git clone https://github.com/MaddyDev-glitch/iperf3-webui.git
 cd iperf3-webui
 ```
 
