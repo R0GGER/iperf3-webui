@@ -1,9 +1,13 @@
 services:
   iperf3-webui:
-    image: ghcr.io/maddydev-glitch/iperf3-webui
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #image: ghcr.io/R0GGER/iperf3-webui
     container_name: iperf3-webui
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - 5000:5000
     volumes:
       - ./env.yaml:/app/env.yaml
     environment:
