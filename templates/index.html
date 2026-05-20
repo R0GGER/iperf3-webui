@@ -69,20 +69,15 @@
             <div class="title-wrapper">
                 <div class="title">
                     <h1>iPerf3 <span class="gradient-text">Speed Test</span></h1>
-                    <span class="version-badge">v1.4.0.1</span>
                 </div>
                 <p id="iperf_version" class="subtitle">Loading version...</p>
-            </div>
-            <div class="gittag">
-                <span class="tag-label">Latest Release:</span>
-                <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/MaddyDev-glitch/iperf3-webui">
             </div>
         </div>
     </header>
 
     <main class="container">
-        <!-- Speedometer Section -->
-        <div class="speedometer-section">
+        <!-- Speedometer Section (normal mode) -->
+        <div class="speedometer-section" id="gauge-section">
             <div class="speedometer-container">
                 <canvas id="speedometer" class="speedometer"></canvas>
                 <div class="number">
@@ -103,6 +98,56 @@
                 <div class="stat-card">
                     <div class="stat-label">Maximum</div>
                     <div class="stat-value max_speed">--</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bidir Section (FAST.com style) -->
+        <div class="speedometer-section bidir-section" id="bidir-section" style="display: none;">
+            <div class="bidir-container">
+                <div class="bidir-status status">Ready</div>
+
+                <div class="bidir-main">
+                    <div class="bidir-direction">
+                        <svg class="bidir-icon bidir-icon-download" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                        </svg>
+                        <span class="bidir-direction-label">Download</span>
+                    </div>
+                    <div class="bidir-speed">
+                        <span class="bidir-speed-value" id="bidir-download-value">0</span>
+                        <span class="bidir-speed-unit units">Mbps</span>
+                    </div>
+                </div>
+
+                <div class="bidir-divider"></div>
+
+                <div class="bidir-main">
+                    <div class="bidir-direction">
+                        <svg class="bidir-icon bidir-icon-upload" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                        </svg>
+                        <span class="bidir-direction-label">Upload</span>
+                    </div>
+                    <div class="bidir-speed">
+                        <span class="bidir-speed-value" id="bidir-upload-value">0</span>
+                        <span class="bidir-speed-unit units">Mbps</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value status">Ready</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Download</div>
+                    <div class="stat-value bidir-avg-download">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Upload</div>
+                    <div class="stat-value bidir-avg-upload">--</div>
                 </div>
             </div>
         </div>
@@ -145,7 +190,7 @@
 
                 <div class="field">
                     <label>Mode</label>
-                    <div class="toggle-container">
+                    <div class="toggle-container three-col">
                         <button id="uploadBtn" class="toggle-btn active">
                             <svg class="toggle-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
@@ -157,6 +202,12 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
                             </svg>
                             <span class="toggle-label">Download</span>
+                        </button>
+                        <button id="bidirBtn" class="toggle-btn">
+                            <svg class="toggle-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                            </svg>
+                            <span class="toggle-label">Bidir</span>
                         </button>
                     </div>
                 </div>
