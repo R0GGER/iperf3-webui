@@ -4,7 +4,7 @@
 Run network speed tests easily from **any device** — macOS, Linux, Windows, or even Android phones (via Termux).
 
 ---
-## Updates on v1.4.0.1 
+## Updates
  - Performance fixes (cpu utilization reduced)
  
 ## ✨ Features
@@ -29,73 +29,72 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 
 ## 🚀 Getting Started
 
-### 🔧 Option 1: Run Locally
+### Option 1: Run as Docker Container 
+
+```yaml
+services:
+  iperf3-webui:
+    image: ghcr.io/R0GGER/iperf3-webui
+    container_name: iperf3-webui
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+    volumes:
+      - ./env.yaml:/app/env.yaml
+    environment:
+      - FLASK_DEBUG=false
+```
+
+```bash
+docker compose up -d
+```
+### Docker CLI
+Or run it in your terminal via commandline...
+
+```bash
+docker run -d -it --name iperf3-webui -p 5000:5000 -v ./env.yaml:/app/env.yaml ghcr.io/R0GGER/iperf3-webui
+```
+
+Now access the Web UI at 👉 http://localhost:5000 from your browser.
+
+
+### 🔧 Option 2: Buiild and run it in Docker
 
 #### 1. Clone the repository
 
 ```bash
-git clone https://github.com/MaddyDev-glitch/iperf3-webui.git
+git clone https://github.com/R0GGER/iperf3-webui.git
 cd iperf3-webui
 ```
 
-#### 2. Install requirements
+#### 2. docker-compose.yml
 
-```bash
-pip install -r requirements.txt
+```yaml
+services:
+  iperf3-webui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #image: ghcr.io/R0GGER/iperf3-webui
+    container_name: iperf3-webui
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+    volumes:
+      - ./env.yaml:/app/env.yaml
+    environment:
+      - FLASK_DEBUG=false
 ```
 
-#### 3. Run the server
+#### 3. Build and start
 
 ```bash
-python3 app.py
+docker compose up --build -d
 ```
 
 By default, the app will be available at:  
 👉 http://localhost:5000
 
-(You can change the port inside `app.py` if needed.)
-
----
-
-### 🐳 Option 2: Run as Docker Container (or Podman)
-
-#### 1. Option A: Build and run the Docker image
-
-```bash
-docker build -f Containerfile -t iperf3-webui:v1.4.0.1 
-docker run -it -p 5000:5000 -v ./env.yaml:/app/env.yaml iperf3-webui:v1.4.0.1
-
-```
-#### 2. Option B: Pull pre-built image from GitHub Container Registry
-
-```bash
-docker pull ghcr.io/maddydev-glitch/iperf3-webui:v1.4.0.1
-```
-📦 This pulls the latest pre-built image from:
-https://github.com/MaddyDev-glitch/iperf3-webui/pkgs/container/iperf3-webui
-
-🎨 Customize the Theme Using env.yaml
-If you want to apply custom themes or settings, mount the env.yaml file into the container:
-```bash
-docker run -it -p 5000:5000 -v ./env.yaml:/app/env.yaml ghcr.io/maddydev-glitch/iperf3-webui:v1.4.0.1
-```
-
-Now access the Web UI at 👉 http://localhost:5000 from your browser.
-
----
-
-## ⚙️ Requirements
-
-- Python 3.6+ (Developed and Tested on Python 3.11.5)
-- Flask 
-- iPerf3 installed on your machine, iPerf3.exe is packaged in the repo
-
-> On Linux, install iPerf3 via:  
-> ```bash
-> sudo apt install iperf3
-> ```
-
----
 
 ## 👋 Usage
 
@@ -153,26 +152,4 @@ For more details, see the [LICENSE](LICENSE) file.
 Developed with ☕ and ❤️ by [MaddyDev-glitch (Srimadhaven Thirumurthy)](https://github.com/MaddyDev-glitch)
 
 ---
-
-## 🔥 Bonus
-
-If you like this project, consider giving it a ⭐️ on GitHub!
-
----
-
-## 🚀 Feature Requests & Pull Requests
-Have an idea to make iPerf3-WebUI even better?
-Found a bug or missing feature?
-
-Feel free to open an Issue for feature requests, bug reports, or suggestions.
-
-Pull Requests (PRs) are very welcome!
-If you fix a bug, improve the UI, or add new functionality, submit a PR to dev branch — let's build it together!
-
-When contributing, please make sure your code is clean, readable, and tested.
-Together, we can make the best modern UI for iPerf3!
-
----
-
-#
 
