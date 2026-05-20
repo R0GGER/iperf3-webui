@@ -34,7 +34,7 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 ```yaml
 services:
   iperf3-webui:
-    image: ghcr.io/R0GGER/iperf3-webui
+    image: ghcr.io/r0gger/iperf3-webui
     container_name: iperf3-webui
     restart: unless-stopped
     ports:
@@ -63,7 +63,7 @@ Now access the Web UI at 👉 http://localhost:5000 from your browser.
 #### 1. Clone the repository
 
 ```bash
-git clone https://github.com/R0GGER/iperf3-webui.git
+git clone https://github.com/r0gger/iperf3-webui.git
 cd iperf3-webui
 ```
 
@@ -75,7 +75,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    #image: ghcr.io/R0GGER/iperf3-webui
+    #image: ghcr.io/r0gger/iperf3-webui
     container_name: iperf3-webui
     restart: unless-stopped
     ports:

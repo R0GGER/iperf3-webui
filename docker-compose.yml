@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    #image: ghcr.io/R0GGER/iperf3-webui
+    #image: ghcr.io/r0gger/iperf3-webui
     container_name: iperf3-webui
     restart: unless-stopped
     ports:
