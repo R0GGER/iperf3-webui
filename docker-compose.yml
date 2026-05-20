@@ -1,0 +1,10 @@
+services:
+  iperf3-webui:
+    image: ghcr.io/maddydev-glitch/iperf3-webui
+    container_name: iperf3-webui
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./env.yaml:/app/env.yaml
+    environment:
+      - FLASK_DEBUG=false
