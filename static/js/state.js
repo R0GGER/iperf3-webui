@@ -8,9 +8,14 @@ const state = {
   units: 'Mbps',             // Default unit
   speedtest_state: 'READY',  // Test state: READY or RUNNING
 
-  bandwidthSum: 0,           // Sum of bandwidth values
-  bandwidthCount: 0,         // Count of bandwidth samples
-  maxBandwidth: 0            // Max bandwidth observed
+  bandwidthSum: 0,
+  bandwidthCount: 0,
+  maxBandwidth: 0,
+
+  bidirDownloadSum: 0,
+  bidirDownloadCount: 0,
+  bidirUploadSum: 0,
+  bidirUploadCount: 0
 };
 
 export default {
@@ -91,10 +96,26 @@ export default {
     state.maxBandwidth = value;
   },
 
+  get bidirDownloadSum() { return state.bidirDownloadSum; },
+  set bidirDownloadSum(v) { state.bidirDownloadSum = v; },
+
+  get bidirDownloadCount() { return state.bidirDownloadCount; },
+  set bidirDownloadCount(v) { state.bidirDownloadCount = v; },
+
+  get bidirUploadSum() { return state.bidirUploadSum; },
+  set bidirUploadSum(v) { state.bidirUploadSum = v; },
+
+  get bidirUploadCount() { return state.bidirUploadCount; },
+  set bidirUploadCount(v) { state.bidirUploadCount = v; },
+
   resetStats() {
     state.bandwidthSum = 0;
     state.bandwidthCount = 0;
     state.maxBandwidth = 0;
+    state.bidirDownloadSum = 0;
+    state.bidirDownloadCount = 0;
+    state.bidirUploadSum = 0;
+    state.bidirUploadCount = 0;
   }
 };
 

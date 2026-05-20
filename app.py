@@ -17,6 +17,7 @@ SUM_values = []
 output_lines = []
 streams = 0
 selected_unit = "Mbps"
+current_mode = "upload"
 
 def convert_bandwidth(value, target_unit="Gbps"):
     print(value)
@@ -101,7 +102,7 @@ def proxy_csv():
 
 @app.route("/run_iperf", methods=["POST"])
 def run_iperf():
-    global output_lines, streams, selected_unit
+    global output_lines, streams, selected_unit, current_mode
     output_lines = []
 
     data = request.get_json()
@@ -115,6 +116,7 @@ def run_iperf():
     bandwidth = data.get("bandwidth", "0")
     port = data.get("port", "5201")
     selected_unit = data.get("units","Mbits")
+    current_mode = mode
     print("DEBUG",protocol,mode,streams,target,bandwidth,port,selected_unit)
     if not target:
         return jsonify({"error": "Target is required."}), 400
@@ -136,6 +138,8 @@ def run_iperf():
             cmd.append("10")
         if mode == "download":
             cmd.append("-R")
+        elif mode == "bidir":
+            cmd.append("--bidir")
         cmd.append("--forceflush")
         print(cmd)
         process = subprocess.Popen(
@@ -166,9 +170,51 @@ def run_iperf():
 @app.route("/stream_iperf", methods=["GET"])
 def stream_iperf():
     def generate_output():
-        global output_lines, streams, selected_unit
+        global output_lines, streams, selected_unit, current_mode
         print("DEBUG unit:",selected_unit)
-        process_done = False  # Track process completion
+        process_done = False
+
+        if current_mode == "bidir":
+            while True:
+                if not output_lines:
+                    if process_done:
+                        break
+                    time.sleep(0.1)
+                    continue
+
+                if output_lines:
+                    output_line = output_lines[0]
+
+                    if "out-of-order" in output_line:
+                        yield f"data: -1\n\n"
+                        process_done = True
+                        break
+
+                    if "server is busy" in output_line or "unable to send control message" in output_line:
+                        yield f"data: server is busy\n\n"
+
+                    bandwidth_match = re.search(bandwidth_pattern, output_line)
+
+                    if "[SUM]" in output_line and "bits/sec" in output_line and "sender" not in output_line and "receiver" not in output_line:
+                        if bandwidth_match:
+                            sum_str = bandwidth_match.group(0)
+                            sum_g = convert_bandwidth(sum_str, selected_unit)
+                            if "[TX-C]" in output_line:
+                                yield f"data: bidir_upload:{sum_g}\n\n"
+                            elif "[RX-C]" in output_line:
+                                yield f"data: bidir_download:{sum_g}\n\n"
+                            else:
+                                yield f"data: {sum_g}\n\n"
+                    elif "iperf Done" in output_line:
+                        yield f"data: -1\n\n"
+                        process_done = True
+                    elif process_done:
+                        break
+
+                    if output_lines:
+                        output_lines.pop(0)
+            return
+
         if streams == 1:
             while True:
                 if not output_lines:

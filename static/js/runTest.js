@@ -3,6 +3,94 @@ import { initGauge, updateGauge } from './gauge.js';
 
 const runBtn = document.getElementById('runBtn');
 const resultEl = document.getElementById('result');
+
+function resetBidirDisplay() {
+    document.getElementById('bidir-download-value').textContent = '0';
+    document.getElementById('bidir-upload-value').textContent = '0';
+    document.querySelectorAll('.bidir-avg-download').forEach(el => el.textContent = '--');
+    document.querySelectorAll('.bidir-avg-upload').forEach(el => el.textContent = '--');
+}
+
+function handleBidirData(event, units) {
+    const data = event.data;
+
+    if (parseFloat(data) < 0) {
+        document.querySelectorAll(".status").forEach(el => el.textContent = "Complete");
+
+        const avgDl = state.bidirDownloadCount > 0
+            ? (state.bidirDownloadSum / state.bidirDownloadCount).toFixed(2) : '--';
+        const avgUl = state.bidirUploadCount > 0
+            ? (state.bidirUploadSum / state.bidirUploadCount).toFixed(2) : '--';
+
+        document.querySelectorAll('.bidir-avg-download').forEach(el => el.textContent = `${avgDl} ${units}`);
+        document.querySelectorAll('.bidir-avg-upload').forEach(el => el.textContent = `${avgUl} ${units}`);
+        return 'close';
+    }
+
+    if (data === "server is busy") {
+        document.querySelectorAll(".status").forEach(el => el.textContent = "Server is Busy");
+        return;
+    }
+
+    if (data.startsWith('bidir_download:')) {
+        const val = parseFloat(data.split(':')[1]);
+        if (!isNaN(val)) {
+            document.getElementById('bidir-download-value').textContent = val.toFixed(2);
+            state.bidirDownloadSum += val;
+            state.bidirDownloadCount += 1;
+            document.querySelectorAll(".status").forEach(el => el.textContent = "Running");
+            resultEl.textContent += `DL: ${val.toFixed(2)} ${units}\n`;
+        }
+    } else if (data.startsWith('bidir_upload:')) {
+        const val = parseFloat(data.split(':')[1]);
+        if (!isNaN(val)) {
+            document.getElementById('bidir-upload-value').textContent = val.toFixed(2);
+            state.bidirUploadSum += val;
+            state.bidirUploadCount += 1;
+            document.querySelectorAll(".status").forEach(el => el.textContent = "Running");
+            resultEl.textContent += `UL: ${val.toFixed(2)} ${units}\n`;
+        }
+    }
+}
+
+function handleNormalData(event, units) {
+    const data = event.data;
+
+    if (parseFloat(data) < 0) {
+        document.querySelector(".status").textContent = "Complete";
+        return 'close';
+    }
+
+    const avg = state.bandwidthCount > 0 ? (state.bandwidthSum / state.bandwidthCount).toFixed(2) : 0;
+
+    if (data === "--- TEST COMPLETED ---") {
+        resultEl.textContent += "Test completed successfully.\n";
+        return 'close';
+    }
+
+    if (data === "server is busy") {
+        document.querySelector(".status").textContent = "Server is Busy";
+        return;
+    }
+
+    let bandwidthValue = parseFloat(data);
+    if (!isNaN(bandwidthValue)) {
+        if (bandwidthValue >= 0) {
+            updateGauge(bandwidthValue);
+            state.bandwidthSum += bandwidthValue;
+            state.bandwidthCount += 1;
+            if (bandwidthValue > state.maxBandwidth) state.maxBandwidth = bandwidthValue;
+
+            document.querySelector(".status").textContent = "Running";
+            resultEl.textContent += data + '\n';
+        } else {
+            document.querySelector(".status").textContent = "Complete";
+            document.querySelector(".avg_speed").textContent = `${avg} ${units}`;
+            document.querySelector(".max_speed").textContent = `${state.maxBandwidth} ${units}`;
+        }
+    }
+}
+
 runBtn.addEventListener('click', async () => {
     const target = state.ip;
     const port = state.port;
@@ -11,17 +99,18 @@ runBtn.addEventListener('click', async () => {
     const protocol = state.protocol;
     const mode = state.mode;
     const units = state.units;
-    console.log(target, port, streams, bandwidth, protocol, mode, units)
 
     const regex = /^\d+(\.\d+)?[KMG]$/i;
-
     if (!regex.test(bandwidth)) bandwidth = "0";
 
     resultEl.textContent = "Running iPerf3...\n";
-    state.bandwidthSum = 0;
-    state.bandwidthCount = 0;
-    state.maxBandwidth = 0;
-    initGauge();
+    state.resetStats();
+
+    if (mode === 'bidir') {
+        resetBidirDisplay();
+    } else {
+        initGauge();
+    }
 
     try {
         const response = await fetch('/run_iperf', {
@@ -38,37 +127,12 @@ runBtn.addEventListener('click', async () => {
         let eventSource = new EventSource('/stream_iperf');
 
         eventSource.onmessage = (event) => {
-            if (parseFloat(event.data) < 0) {
-                document.querySelector(".status").textContent = "Complete";
-                eventSource.close();
-                // return;
-            }
+            const result = mode === 'bidir'
+                ? handleBidirData(event, units)
+                : handleNormalData(event, units);
 
-            const avg = state.bandwidthCount > 0 ? (state.bandwidthSum / state.bandwidthCount).toFixed(2) : 0;
-            if (event.data === "--- TEST COMPLETED ---") {
-                resultEl.textContent += "Test completed successfully.\n";
+            if (result === 'close') {
                 eventSource.close();
-            }
-            else if (event.data === "server is busy"){
-                document.querySelector(".status").textContent = "Server is Busy";
-            }
-            else {
-                let bandwidthValue = parseFloat(event.data);
-                if (!isNaN(bandwidthValue)) {
-                    if (bandwidthValue >= 0) {
-                        updateGauge(bandwidthValue);
-                        state.bandwidthSum += bandwidthValue;
-                        state.bandwidthCount += 1;
-                        if (bandwidthValue > state.maxBandwidth) state.maxBandwidth = bandwidthValue;
-
-                        document.querySelector(".status").textContent = "Running";
-                        resultEl.textContent += event.data + '\n';
-                    } else {
-                        document.querySelector(".status").textContent = "Complete";
-                        document.querySelector(".avg_speed").textContent = `${avg} ${units}`;
-                        document.querySelector(".max_speed").textContent = `${state.maxBandwidth} ${units}`;
-                    }
-                }
             }
         };
 

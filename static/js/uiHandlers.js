@@ -22,19 +22,27 @@ document.getElementById('bandwidth').addEventListener('input', () => {
 
 
 
-document.getElementById('uploadBtn').addEventListener('click', () => {
-    document.getElementById('uploadBtn').classList.add('active');
-    document.getElementById('downloadBtn').classList.remove('active');
-    state.mode = 'upload';
-    console.log('Selected mode: Upload');
-});
+const modeBtns = ['uploadBtn', 'downloadBtn', 'bidirBtn'];
+const gaugeSection = document.getElementById('gauge-section');
+const bidirSection = document.getElementById('bidir-section');
 
-document.getElementById('downloadBtn').addEventListener('click', () => {
-    document.getElementById('downloadBtn').classList.add('active');
-    document.getElementById('uploadBtn').classList.remove('active');
-    state.mode = 'download';
-    console.log('Selected mode: Download');
-});
+function setMode(activeId, mode) {
+    modeBtns.forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(activeId).classList.add('active');
+    state.mode = mode;
+
+    if (mode === 'bidir') {
+        gaugeSection.style.display = 'none';
+        bidirSection.style.display = '';
+    } else {
+        gaugeSection.style.display = '';
+        bidirSection.style.display = 'none';
+    }
+}
+
+document.getElementById('uploadBtn').addEventListener('click', () => setMode('uploadBtn', 'upload'));
+document.getElementById('downloadBtn').addEventListener('click', () => setMode('downloadBtn', 'download'));
+document.getElementById('bidirBtn').addEventListener('click', () => setMode('bidirBtn', 'bidir'));
 
 document.getElementById('tcpBtn').addEventListener('click', () => {
     document.getElementById('tcpBtn').classList.add('active');
@@ -56,7 +64,7 @@ document.getElementById('udpBtn').addEventListener('click', () => {
         document.getElementById(unit).classList.add('active');
 
         state.units = unit.replace('bits', 'bps');
-        document.querySelector(".units").textContent = unit.replace('bits', 'bps');
+        document.querySelectorAll(".units").forEach(el => el.textContent = unit.replace('bits', 'bps'));
         console.log(`Selected units: ${state.units.replace('bits', 'bps')}`);
     });
 });
