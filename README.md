@@ -12,6 +12,7 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 - **Live Speedometer** — Real-time results visualization
 - **Upload / Download / Bidir modes** — Including bidirectional testing
 - **Cross-platform** — Works on desktops, laptops, and mobile
+- **Configurable display** — Choose between a speedometer gauge, numeric counter, or let users toggle between both via `display_mode` in `env.yaml`
 - **Customizable** — Streams, units (Kbits/Mbits/Gbits), target IP, logos, themes via `env.yaml`
 - **Docker-ready** — Pre-built GHCR image and GitHub Actions CI/CD pipeline
 
@@ -84,13 +85,29 @@ The app will be available at http://localhost:5000.
 
 ---
 
-## Theme Customization
+## Customization
 
-Easily change the app's look by editing `env.yaml` — no code changes required.
+Easily change the app's look and behavior by editing `env.yaml` — no code changes required.
 
 1. Open `env.yaml`.
 2. Update values under `logos` and `theme` for your colors, speedometer gradients, and logos.
 3. Save and reload the browser tab.
+
+### Display Mode
+
+Control how Upload/Download test results are displayed by setting `display_mode` in `env.yaml`:
+
+| Value     | Description                                                  |
+|-----------|--------------------------------------------------------------|
+| `gauge`   | Speedometer gauge (default)                                  |
+| `counter` | Numeric counter (FAST.com style)                             |
+| `both`    | User can toggle between gauge and counter in the UI          |
+
+Bidir mode always uses the counter display regardless of this setting.
+
+```yaml
+display_mode: "gauge"   # Options: gauge | counter | both
+```
 
 ---
 

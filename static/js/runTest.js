@@ -11,6 +11,12 @@ function resetBidirDisplay() {
     document.querySelectorAll('.bidir-avg-upload').forEach(el => el.textContent = '--');
 }
 
+function resetCounterDisplay() {
+    document.getElementById('counter-value').textContent = '0';
+    document.querySelectorAll('.avg_speed').forEach(el => el.textContent = '--');
+    document.querySelectorAll('.max_speed').forEach(el => el.textContent = '--');
+}
+
 function handleBidirData(event, units) {
     const data = event.data;
 
@@ -56,11 +62,13 @@ function handleBidirData(event, units) {
 function handleNormalData(event, units) {
     const data = event.data;
 
+    const isCounter = state.effectiveDisplay === 'counter';
+
     if (parseFloat(data) < 0) {
         const avg = state.bandwidthCount > 0 ? (state.bandwidthSum / state.bandwidthCount).toFixed(2) : '--';
-        document.querySelector(".status").textContent = "Complete";
-        document.querySelector(".avg_speed").textContent = `${avg} ${units}`;
-        document.querySelector(".max_speed").textContent = `${state.maxBandwidth.toFixed(2)} ${units}`;
+        document.querySelectorAll(".status").forEach(el => el.textContent = "Complete");
+        document.querySelectorAll(".avg_speed").forEach(el => el.textContent = `${avg} ${units}`);
+        document.querySelectorAll(".max_speed").forEach(el => el.textContent = `${state.maxBandwidth.toFixed(2)} ${units}`);
         return 'close';
     }
 
@@ -70,18 +78,22 @@ function handleNormalData(event, units) {
     }
 
     if (data === "server is busy") {
-        document.querySelector(".status").textContent = "Server is Busy";
+        document.querySelectorAll(".status").forEach(el => el.textContent = "Server is Busy");
         return;
     }
 
     let bandwidthValue = parseFloat(data);
     if (!isNaN(bandwidthValue) && bandwidthValue >= 0) {
-        updateGauge(bandwidthValue);
+        if (isCounter) {
+            document.getElementById('counter-value').textContent = bandwidthValue.toFixed(2);
+        } else {
+            updateGauge(bandwidthValue);
+        }
         state.bandwidthSum += bandwidthValue;
         state.bandwidthCount += 1;
         if (bandwidthValue > state.maxBandwidth) state.maxBandwidth = bandwidthValue;
 
-        document.querySelector(".status").textContent = "Running";
+        document.querySelectorAll(".status").forEach(el => el.textContent = "Running");
         resultEl.textContent += data + '\n';
     }
 }
@@ -103,6 +115,8 @@ runBtn.addEventListener('click', async () => {
 
     if (mode === 'bidir') {
         resetBidirDisplay();
+    } else if (state.effectiveDisplay === 'counter') {
+        resetCounterDisplay();
     } else {
         initGauge();
     }

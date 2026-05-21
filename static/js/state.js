@@ -5,6 +5,8 @@ const state = {
   bandwidth: '0',
   protocol: 'tcp',           // Default protocol
   mode: 'download',          // Default mode
+  displayMode: 'gauge',      // Display mode: gauge | counter | both
+  activeDisplay: 'gauge',    // Currently active display when displayMode is "both"
   units: 'Mbps',             // Default unit
   speedtest_state: 'READY',  // Test state: READY or RUNNING
 
@@ -59,6 +61,26 @@ export default {
   },
   set mode(value) {
     state.mode = value;
+  },
+
+  get displayMode() {
+    return state.displayMode;
+  },
+  set displayMode(value) {
+    state.displayMode = value;
+  },
+
+  get activeDisplay() {
+    return state.activeDisplay;
+  },
+  set activeDisplay(value) {
+    state.activeDisplay = value;
+  },
+
+  get effectiveDisplay() {
+    if (state.mode === 'bidir') return 'counter';
+    if (state.displayMode === 'both') return state.activeDisplay;
+    return state.displayMode;
   },
 
   get units() {

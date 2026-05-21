@@ -16,6 +16,8 @@ This is the first release as an independent fork of [MaddyDev-glitch/iperf3-webu
 - **docker-compose.yml** — Added a ready-to-use Compose file with build context, port mapping, and `env.yaml` volume mount.
 - **GitHub Actions CI/CD** — New `.github/workflows/docker-build.yml` workflow to automatically build and push the Docker image to GHCR on every push to `main`.
 
+- **Display mode configuration** — New `display_mode` setting in `env.yaml` (`gauge`, `counter`, or `both`) controls how Upload/Download results are displayed: as a speedometer gauge, a FAST.com-style numeric counter, or with a user toggle between both. When set to `both`, a Gauge/Counter toggle appears below the active display section. Bidir mode always uses the counter display regardless of this setting.
+
 ### Fixed
 - **Average and Maximum not shown in Upload/Download mode** — The completion signal (negative value) triggered an early return before the average and maximum stats were written to the DOM. Moved the avg/max calculation into the completion handler so they are now correctly displayed when a test finishes.
 

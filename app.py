@@ -62,10 +62,11 @@ def index():
         config = yaml.safe_load(f)
     logos = config.get("logos", [])
     theme = config.get("theme", {})
+    display_mode = config.get("display_mode", "gauge")
 
     default_target = ""
     return render_template(
-        "index.html", default_target=default_target, logos=logos, theme=theme
+        "index.html", default_target=default_target, logos=logos, theme=theme, display_mode=display_mode
     )
 
 @app.route("/test")
@@ -74,10 +75,11 @@ def test():
         config = yaml.safe_load(f)
     logos = config.get("logos", [])
     theme = config.get("theme", {})
+    display_mode = config.get("display_mode", "gauge")
 
     default_target = ""
     return render_template(
-        "test.html", default_target=default_target, logos=logos, theme=theme
+        "test.html", default_target=default_target, logos=logos, theme=theme, display_mode=display_mode
     )
 
 @app.route("/proxy/iperf3-csv")

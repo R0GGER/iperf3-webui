@@ -75,7 +75,7 @@
         </div>
     </header>
 
-    <main class="container">
+    <main class="container" data-display-mode="{{ display_mode|default('gauge') }}">
         <!-- Speedometer Section (normal mode) -->
         <div class="speedometer-section" id="gauge-section">
             <div class="speedometer-container">
@@ -98,6 +98,18 @@
                 <div class="stat-card">
                     <div class="stat-label">Maximum</div>
                     <div class="stat-value max_speed">--</div>
+                </div>
+            </div>
+
+            <div class="field display-toggle-field" style="display: none;">
+                <label>Display</label>
+                <div class="toggle-container">
+                    <button class="toggle-btn display-gauge-btn active">
+                        <span class="toggle-label">Gauge</span>
+                    </button>
+                    <button class="toggle-btn display-counter-btn">
+                        <span class="toggle-label">Counter</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -148,6 +160,56 @@
                 <div class="stat-card">
                     <div class="stat-label">Avg Upload</div>
                     <div class="stat-value bidir-avg-upload">--</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Counter Section (single-direction numeric display) -->
+        <div class="speedometer-section bidir-section" id="counter-section" style="display: none;">
+            <div class="bidir-container">
+                <div class="bidir-status status">Ready</div>
+
+                <div class="bidir-main">
+                    <div class="bidir-direction">
+                        <svg class="bidir-icon" id="counter-icon-download" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                        </svg>
+                        <svg class="bidir-icon" id="counter-icon-upload" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                        </svg>
+                        <span class="bidir-direction-label" id="counter-direction-label">Download</span>
+                    </div>
+                    <div class="bidir-speed">
+                        <span class="bidir-speed-value" id="counter-value">0</span>
+                        <span class="bidir-speed-unit units">Mbps</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value status">Ready</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average</div>
+                    <div class="stat-value avg_speed">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Maximum</div>
+                    <div class="stat-value max_speed">--</div>
+                </div>
+            </div>
+
+            <div class="field display-toggle-field" style="display: none;">
+                <label>Display</label>
+                <div class="toggle-container">
+                    <button class="toggle-btn display-gauge-btn">
+                        <span class="toggle-label">Gauge</span>
+                    </button>
+                    <button class="toggle-btn display-counter-btn active">
+                        <span class="toggle-label">Counter</span>
+                    </button>
                 </div>
             </div>
         </div>
