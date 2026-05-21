@@ -18,7 +18,7 @@ Run network speed tests easily from **any device** — macOS, Linux, Windows, or
 
 ---
 
-## Screenshots
+## Screenshot
 ![](images/screenshot.png)
 ---
 
