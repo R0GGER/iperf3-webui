@@ -2,3 +2,4 @@ psutil
 flask
 pyyaml
 requests
+gunicorn

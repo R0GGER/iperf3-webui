@@ -33,11 +33,11 @@ services:
     container_name: iperf3-webui
     restart: unless-stopped
     ports:
-      - 5000:5000
+      - ${PORT:-5000}:${PORT:-5000}
     volumes:
       - ./env.yaml:/app/env.yaml
     environment:
-      - FLASK_DEBUG=false
+      - PORT=${PORT:-5000}
 ```
 
 ```bash
@@ -47,7 +47,7 @@ docker compose up -d
 Or run via the Docker CLI:
 
 ```bash
-docker run -d -it --name iperf3-webui -p 5000:5000 -v ./env.yaml:/app/env.yaml ghcr.io/r0gger/iperf3-webui
+docker run -d -it --name iperf3-webui -p 5000:5000 -e PORT=5000 -v ./env.yaml:/app/env.yaml ghcr.io/r0gger/iperf3-webui
 ```
 
 Access the Web UI at http://localhost:5000.
@@ -68,6 +68,30 @@ docker compose up --build -d
 ```
 
 The app will be available at http://localhost:5000.
+
+### Changing the port
+
+By default the app runs on port **5000**. To use a different port, set the `PORT` environment variable:
+
+**Option A** — inline when starting:
+
+```bash
+PORT=8080 docker compose up -d --build
+```
+
+**Option B** — create a `.env` file next to `docker-compose.yml`:
+
+```env
+PORT=8080
+```
+
+Then run `docker compose up -d` as usual.
+
+**Docker CLI:**
+
+```bash
+docker run -d -it --name iperf3-webui -p 8080:8080 -e PORT=8080 -v ./env.yaml:/app/env.yaml ghcr.io/r0gger/iperf3-webui
+```
 
 ---
 

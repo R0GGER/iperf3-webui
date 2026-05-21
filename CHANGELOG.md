@@ -7,6 +7,8 @@ All notable changes to this project are documented in this file.
 This is the first release as an independent fork of [MaddyDev-glitch/iperf3-webui](https://github.com/MaddyDev-glitch/iperf3-webui).
 
 ### Added
+- **Gunicorn production server** — Replaced Flask's built-in development server with Gunicorn for improved stability and concurrency.
+- **Configurable port** — The web UI port is now configurable via the `PORT` environment variable (defaults to `5000`).
 - **Bidirectional (bidir) testing mode** — Full `--bidir` support with a dedicated FAST.com-style UI showing simultaneous upload and download speeds, including per-direction averages.
 - **Bidir UI section** — New HTML/CSS layout with download/upload indicators, live speed values, and stats grid (avg download, avg upload).
 - **Bidir state management** — Added `bidirDownloadSum`, `bidirDownloadCount`, `bidirUploadSum`, `bidirUploadCount` to the application state with a unified `resetStats()` method.

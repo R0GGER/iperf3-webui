@@ -15,5 +15,6 @@ COPY env.yaml .
 
 RUN pip install --requirement requirements.txt
 
-EXPOSE 5000
-CMD ["python3", "app.py"]
+ENV PORT=5000
+EXPOSE ${PORT}
+CMD gunicorn --bind 0.0.0.0:${PORT} --workers 2 --timeout 120 app:app
