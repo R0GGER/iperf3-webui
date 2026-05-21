@@ -57,11 +57,12 @@ function handleNormalData(event, units) {
     const data = event.data;
 
     if (parseFloat(data) < 0) {
+        const avg = state.bandwidthCount > 0 ? (state.bandwidthSum / state.bandwidthCount).toFixed(2) : '--';
         document.querySelector(".status").textContent = "Complete";
+        document.querySelector(".avg_speed").textContent = `${avg} ${units}`;
+        document.querySelector(".max_speed").textContent = `${state.maxBandwidth.toFixed(2)} ${units}`;
         return 'close';
     }
-
-    const avg = state.bandwidthCount > 0 ? (state.bandwidthSum / state.bandwidthCount).toFixed(2) : 0;
 
     if (data === "--- TEST COMPLETED ---") {
         resultEl.textContent += "Test completed successfully.\n";
@@ -74,20 +75,14 @@ function handleNormalData(event, units) {
     }
 
     let bandwidthValue = parseFloat(data);
-    if (!isNaN(bandwidthValue)) {
-        if (bandwidthValue >= 0) {
-            updateGauge(bandwidthValue);
-            state.bandwidthSum += bandwidthValue;
-            state.bandwidthCount += 1;
-            if (bandwidthValue > state.maxBandwidth) state.maxBandwidth = bandwidthValue;
+    if (!isNaN(bandwidthValue) && bandwidthValue >= 0) {
+        updateGauge(bandwidthValue);
+        state.bandwidthSum += bandwidthValue;
+        state.bandwidthCount += 1;
+        if (bandwidthValue > state.maxBandwidth) state.maxBandwidth = bandwidthValue;
 
-            document.querySelector(".status").textContent = "Running";
-            resultEl.textContent += data + '\n';
-        } else {
-            document.querySelector(".status").textContent = "Complete";
-            document.querySelector(".avg_speed").textContent = `${avg} ${units}`;
-            document.querySelector(".max_speed").textContent = `${state.maxBandwidth} ${units}`;
-        }
+        document.querySelector(".status").textContent = "Running";
+        resultEl.textContent += data + '\n';
     }
 }
 
